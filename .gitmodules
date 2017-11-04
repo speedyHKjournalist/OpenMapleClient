@@ -1,0 +1,4 @@
+[submodule "app/src/main/cpp/glfw"]
+	path = app/src/main/cpp/glfw
+	url = https://github.com/xCuri0/glfw
+	branch = android
