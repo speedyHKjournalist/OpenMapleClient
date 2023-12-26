@@ -1,0 +1,411 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "thirdparty/glfw/src/libglfw3.a"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"target_compile_options",
+			"add_compile_definitions",
+			"target_compile_definitions",
+			"target_include_directories",
+			"set_target_properties"
+		],
+		"files" : 
+		[
+			"thirdparty/glfw/src/CMakeLists.txt",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 87,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 131,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 2,
+				"parent" : 3
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 107,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 108,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 111,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 98,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-Wall"
+				},
+				{
+					"fragment" : "-std=gnu99"
+				},
+				{
+					"fragment" : "-Wdeclaration-after-statement"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 4,
+					"define" : "NDK_DEBUG=1"
+				},
+				{
+					"backtrace" : 5,
+					"define" : "_GLFW_USE_CONFIG_H"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 6,
+					"path" : "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/glfw/include"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/glfw/src"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/thirdparty/glfw/src"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/Users/renruisi/Library/Android/sdk/ndk/26.1.10909125/sources/android/native_app_glue"
+				}
+			],
+			"language" : "C",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					8
+				],
+				"standard" : "99"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				12,
+				13
+			],
+			"sysroot" : 
+			{
+				"path" : "/Users/renruisi/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/sysroot"
+			}
+		},
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-Wall"
+				},
+				{
+					"fragment" : "-std=gnu99"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 4,
+					"define" : "NDK_DEBUG=1"
+				},
+				{
+					"backtrace" : 5,
+					"define" : "_GLFW_USE_CONFIG_H"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 6,
+					"path" : "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/glfw/include"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/glfw/src"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/thirdparty/glfw/src"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/Users/renruisi/Library/Android/sdk/ndk/26.1.10909125/sources/android/native_app_glue"
+				}
+			],
+			"language" : "C",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					8
+				],
+				"standard" : "99"
+			},
+			"sourceIndexes" : 
+			[
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				14
+			],
+			"sysroot" : 
+			{
+				"path" : "/Users/renruisi/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/sysroot"
+			}
+		}
+	],
+	"folder" : 
+	{
+		"name" : "GLFW3"
+	},
+	"id" : "glfw::@66b0edeafaa5c4890854",
+	"name" : "glfw",
+	"nameOnDisk" : "libglfw3.a",
+	"paths" : 
+	{
+		"build" : "thirdparty/glfw/src",
+		"source" : "thirdparty/glfw/src"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "thirdparty/glfw/src/context.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "thirdparty/glfw/src/init.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "thirdparty/glfw/src/input.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "thirdparty/glfw/src/monitor.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "thirdparty/glfw/src/vulkan.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "thirdparty/glfw/src/window.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "thirdparty/glfw/src/android_init.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "thirdparty/glfw/src/android_monitor.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "thirdparty/glfw/src/android_window.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "thirdparty/glfw/src/android_joystick.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "thirdparty/glfw/src/posix_time.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "thirdparty/glfw/src/posix_thread.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "thirdparty/glfw/src/egl_context.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "thirdparty/glfw/src/osmesa_context.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "/Users/renruisi/Library/Android/sdk/ndk/26.1.10909125/sources/android/native_app_glue/android_native_app_glue.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "thirdparty/glfw/src/internal.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "thirdparty/glfw/src/mappings.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/thirdparty/glfw/src/glfw_config.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "thirdparty/glfw/include/GLFW/glfw3.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "thirdparty/glfw/include/GLFW/glfw3native.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "thirdparty/glfw/src/android_platform.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "thirdparty/glfw/src/android_joystick.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "thirdparty/glfw/src/posix_time.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "thirdparty/glfw/src/posix_thread.h",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

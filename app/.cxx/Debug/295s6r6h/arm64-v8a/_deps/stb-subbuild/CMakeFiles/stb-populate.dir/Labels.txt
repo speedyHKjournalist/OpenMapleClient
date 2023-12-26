@@ -1,0 +1,13 @@
+# Target labels
+ stb-populate
+# Source files and their labels
+/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/_deps/stb-subbuild/CMakeFiles/stb-populate
+/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/_deps/stb-subbuild/CMakeFiles/stb-populate.rule
+/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/_deps/stb-subbuild/CMakeFiles/stb-populate-complete.rule
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-build.rule
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-configure.rule
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-download.rule
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-install.rule
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-mkdir.rule
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-patch.rule
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-test.rule

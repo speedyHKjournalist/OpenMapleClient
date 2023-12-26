@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/_deps/stb-subbuild/CMakeFiles/stb-populate"
+		},
+		{
+			"file" : "/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/_deps/stb-subbuild/CMakeFiles/stb-populate.rule"
+		},
+		{
+			"file" : "/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/_deps/stb-subbuild/CMakeFiles/stb-populate-complete.rule"
+		},
+		{
+			"file" : "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-build.rule"
+		},
+		{
+			"file" : "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-configure.rule"
+		},
+		{
+			"file" : "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-download.rule"
+		},
+		{
+			"file" : "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-install.rule"
+		},
+		{
+			"file" : "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-mkdir.rule"
+		},
+		{
+			"file" : "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-patch.rule"
+		},
+		{
+			"file" : "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/src/stb-populate-stamp/stb-populate-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"stb-populate"
+		],
+		"name" : "stb-populate"
+	}
+}

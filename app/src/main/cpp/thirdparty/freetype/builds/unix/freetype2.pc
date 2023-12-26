@@ -1,0 +1,14 @@
+prefix=/Users/renruisi/AndroidStudioProjects/OpenMapleClient/app/src/main/cpp/thirdparty/freetype-build
+exec_prefix=/Users/renruisi/AndroidStudioProjects/OpenMapleClient/app/src/main/cpp/thirdparty/freetype-build
+libdir=/Users/renruisi/AndroidStudioProjects/OpenMapleClient/app/src/main/cpp/thirdparty/freetype-build/lib
+includedir=/Users/renruisi/AndroidStudioProjects/OpenMapleClient/app/src/main/cpp/thirdparty/freetype-build/include
+
+Name: FreeType 2
+URL: https://freetype.org
+Description: A free, high-quality, and portable font engine.
+Version: 26.1.20
+Requires: 
+Requires.private: zlib, libpng, harfbuzz >= 2.0.0
+Libs: -L/Users/renruisi/AndroidStudioProjects/OpenMapleClient/app/src/main/cpp/thirdparty/freetype-build/lib -lfreetype
+Libs.private: -lbz2
+Cflags: -I${includedir}/freetype2

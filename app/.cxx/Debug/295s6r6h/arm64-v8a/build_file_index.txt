@@ -1,0 +1,10 @@
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/CMakeLists.txt
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/CMakeLists.txt
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/Deps.cmake
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/freetype/CMakeLists.txt
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/freetype/builds/cmake/FindBrotliDec.cmake
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/freetype/builds/cmake/FindHarfBuzz.cmake
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/glfw/CMakeLists.txt
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/glfw/src/CMakeLists.txt
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/glfw/src/glfw3Config.cmake.in
+/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/nlnx/CMakeLists.txt

@@ -1,0 +1,69 @@
+{
+  "buildFiles": [
+    "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/CMakeLists.txt",
+    "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/CMakeLists.txt",
+    "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/Deps.cmake",
+    "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/freetype/CMakeLists.txt",
+    "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/freetype/builds/cmake/FindBrotliDec.cmake",
+    "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/freetype/builds/cmake/FindHarfBuzz.cmake",
+    "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/glfw/CMakeLists.txt",
+    "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/glfw/src/CMakeLists.txt",
+    "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/glfw/src/glfw3Config.cmake.in",
+    "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/nlnx/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/renruisi/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/renruisi/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "NoLifeNx::@1819838db2b27e6ac685": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "NoLifeNx",
+      "output": "/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/thirdparty/nlnx/libNoLifeNx.a"
+    },
+    "freetype::@60afae7ab7d649f61ed4": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "freetype",
+      "output": "/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/thirdparty/freetype/libfreetyped.a"
+    },
+    "glfw::@66b0edeafaa5c4890854": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "glfw",
+      "output": "/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/thirdparty/glfw/src/libglfw3.a"
+    },
+    "glfw-example::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "glfw-example",
+      "output": "/Users/renruisi/Downloads/glfw-android-example/app/build/intermediates/cxx/Debug/295s6r6h/obj/arm64-v8a/libglfw-example.so",
+      "runtimeFiles": [
+        "/Users/renruisi/Downloads/glfw-android-example/app/src/main/cpp/thirdparty/bass/libs/arm64-v8a/libbass.so"
+      ]
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/Users/renruisi/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/Users/renruisi/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [
+    "c"
+  ],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

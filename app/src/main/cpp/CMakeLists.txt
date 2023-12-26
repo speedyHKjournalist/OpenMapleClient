@@ -1,21 +1,255 @@
 cmake_minimum_required(VERSION 3.4.1)
-
+add_compile_definitions(NDK_DEBUG=1)
 set(GLFW_BUILD_EXAMPLES OFF CACHE STRING "" FORCE)
 set(GLFW_BUILD_TESTS    OFF CACHE STRING "" FORCE)
 set(GLFW_INSTALL        OFF CACHE STRING "" FORCE)
-add_subdirectory(glfw)
-include_directories(glfw/include src/ ${ANDROID_NDK}/sources/android/native_app_glue/)
+
+add_subdirectory(thirdparty)
+include(thirdparty/Deps.cmake)
+include_directories(thirdparty/glfw/include
+        thirdparty/glfw/deps
+        ${ANDROID_NDK}/sources/android/native_app_glue/)
 # build native_app_glue as a static lib
 set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
-
 # now build app's shared lib
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-error=deprecated-declarations")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Export ANativeActivity_onCreate(),
 # Refer to: https://github.com/android-ndk/ndk/issues/381.
 set(CMAKE_SHARED_LINKER_FLAGS
     "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
-add_library(glfw-example SHARED gl.c)
+add_library(glfw-example SHARED gl.cpp
+        src/Game.cpp
+        src/Configuration.cpp
+        src/Audio/Audio.cpp
+        src/Character/ActiveBuffs.cpp
+        src/Character/Buff.cpp
+        src/Character/Char.cpp
+        src/Character/CharEffect.cpp
+        src/Character/CharStats.cpp
+        src/Character/EquipStat.cpp
+        src/Character/ExpTable.cpp
+        src/Character/Job.cpp
+        src/Character/MapleStat.cpp
+        src/Character/MonsterBook.cpp
+        src/Character/OtherChar.cpp
+        src/Character/PassiveBuffs.cpp
+        src/Character/Player.cpp
+        src/Character/PlayerStates.cpp
+        src/Character/QuestLog.cpp
+        src/Character/SkillBook.cpp
+        src/Character/TeleportRock.cpp
+        src/Character/Inventory/Equip.cpp
+        src/Character/Inventory/EquipQuality.cpp
+        src/Character/Inventory/Inventory.cpp
+        src/Character/Inventory/InventoryType.cpp
+        src/Character/Inventory/Item.cpp
+        src/Character/Inventory/Pet.cpp
+        src/Character/Inventory/Weapon.cpp
+        src/Character/Look/Afterimage.cpp
+        src/Character/Look/Body.cpp
+        src/Character/Look/BodyDrawInfo.cpp
+        src/Character/Look/CharEquips.cpp
+        src/Character/Look/CharLook.cpp
+        src/Character/Look/Clothing.cpp
+        src/Character/Look/EquipSlot.cpp
+        src/Character/Look/Face.cpp
+        src/Character/Look/Hair.cpp
+        src/Character/Look/PetLook.cpp
+        src/Character/Look/Stance.cpp
+        src/Data/BulletData.cpp
+        src/Data/EquipData.cpp
+        src/Data/ItemData.cpp
+        src/Data/JobData.cpp
+        src/Data/SkillData.cpp
+        src/Data/WeaponData.cpp
+        src/IO/Components/AreaButton.cpp
+        src/IO/Components/Button.cpp
+        src/IO/Components/Charset.cpp
+        src/IO/Components/ChatBalloon.cpp
+        src/IO/Components/EquipTooltip.cpp
+        src/IO/Components/Gauge.cpp
+        src/IO/Components/Icon.cpp
+        src/IO/Components/IconCover.cpp
+        src/IO/Components/ItemTooltip.cpp
+        src/IO/Components/MapleButton.cpp
+        src/IO/Components/MapleComboBox.cpp
+        src/IO/Components/MapleFrame.cpp
+        src/IO/Components/MapTooltip.cpp
+        src/IO/Components/NameTag.cpp
+        src/IO/Components/NpcText.cpp
+        src/IO/Components/ScrollingNotice.cpp
+        src/IO/Components/SkillTooltip.cpp
+        src/IO/Components/Slider.cpp
+        src/IO/Components/StatefulIcon.cpp
+        src/IO/Components/Textfield.cpp
+        src/IO/Components/TextTooltip.cpp
+        src/IO/Components/TwoSpriteButton.cpp
+        src/Game.cpp
+        src/IO/Cursor.cpp
+        src/IO/Keyboard.cpp
+        src/IO/Messages.cpp
+        src/IO/UI.cpp
+        src/IO/UIElement.cpp
+        src/IO/UIStateCashShop.cpp
+        src/IO/UIStateGame.cpp
+        src/IO/UIStateLogin.cpp
+        src/IO/UITypes/UIBuffList.cpp
+        src/IO/UITypes/UICashShop.cpp
+        src/IO/UITypes/UIChannel.cpp
+        src/IO/UITypes/UICharInfo.cpp
+        src/IO/UITypes/UIChat.cpp
+        src/IO/UITypes/UIChatBar.cpp
+        src/IO/UITypes/UIEquipInventory.cpp
+        src/IO/UITypes/UIEvent.cpp
+        src/IO/UITypes/UIGaugeBoss.cpp
+        src/IO/UITypes/UIItemInventory.cpp
+        src/IO/UITypes/UIJoypad.cpp
+        src/IO/UITypes/UIKeyConfig.cpp
+        src/IO/UITypes/UIMiniMap.cpp
+        src/IO/UITypes/UINotice.cpp
+        src/IO/UITypes/UINotification.cpp
+        src/IO/UITypes/UINpcTalk.cpp
+        src/IO/UITypes/UIOptionMenu.cpp
+        src/IO/UITypes/UIQuestLog.cpp
+        src/IO/UITypes/UIQuit.cpp
+        src/IO/UITypes/UIShop.cpp
+        src/IO/UITypes/UISkillBook.cpp
+        src/IO/UITypes/UIStatsInfo.cpp
+        src/IO/UITypes/UIStatusBar.cpp
+        src/IO/UITypes/UIStatusMessenger.cpp
+        src/IO/UITypes/UITrade.cpp
+        src/IO/UITypes/UIUserList.cpp
+        src/IO/UITypes/UIWorldMap.cpp
+        src/IO/UITypes/Login/UIAranCreation.cpp
+        src/IO/UITypes/Login/UICharSelect.cpp
+        src/IO/UITypes/Login/UICygnusCreation.cpp
+        src/IO/UITypes/Login/UIExplorerCreation.cpp
+        src/IO/UITypes/Login/UIGender.cpp
+        src/IO/UITypes/Login/UILogin.cpp
+        src/IO/UITypes/Login/UILoginNotice.cpp
+        src/IO/UITypes/Login/UILoginWait.cpp
+        src/IO/UITypes/Login/UILogo.cpp
+        src/IO/UITypes/Login/UIRaceSelect.cpp
+        src/IO/UITypes/Login/UIRegion.cpp
+        src/IO/UITypes/Login/UISoftKey.cpp
+        src/IO/UITypes/Login/UITermsOfService.cpp
+        src/IO/UITypes/Login/UIWorldSelect.cpp
+        src/IO/Window.cpp
+        src/Gameplay/Camera.cpp
+        src/Gameplay/Spawn.cpp
+        src/Gameplay/Stage.cpp
+        src/Gameplay/MapleMap/Drop.cpp
+        src/Gameplay/MapleMap/ItemDrop.cpp
+        src/Gameplay/MapleMap/MapBackgrounds.cpp
+        src/Gameplay/MapleMap/MapChars.cpp
+        src/Gameplay/MapleMap/MapDrops.cpp
+        src/Gameplay/MapleMap/MapEffect.cpp
+        src/Gameplay/MapleMap/MapInfo.cpp
+        src/Gameplay/MapleMap/MapMobs.cpp
+        src/Gameplay/MapleMap/MapNpcs.cpp
+        src/Gameplay/MapleMap/MapObject.cpp
+        src/Gameplay/MapleMap/MapObjects.cpp
+        src/Gameplay/MapleMap/MapPortals.cpp
+        src/Gameplay/MapleMap/MapReactors.cpp
+        src/Gameplay/MapleMap/MapTilesObjs.cpp
+        src/Gameplay/MapleMap/MesoDrop.cpp
+        src/Gameplay/MapleMap/Mob.cpp
+        src/Gameplay/MapleMap/Npc.cpp
+        src/Gameplay/MapleMap/Obj.cpp
+        src/Gameplay/MapleMap/Portal.cpp
+        src/Gameplay/MapleMap/Reactor.cpp
+        src/Gameplay/MapleMap/Tile.cpp
+        src/Gameplay/Combat/Bullet.cpp
+        src/Gameplay/Combat/Combat.cpp
+        src/Gameplay/Combat/DamageNumber.cpp
+        src/Gameplay/Combat/MobCombat.cpp
+        src/Gameplay/Combat/MobSkill.cpp
+        src/Gameplay/Combat/MobSkillHitEffect.cpp
+        src/Gameplay/Combat/MobSkillUseEffect.cpp
+        src/Gameplay/Combat/MobSpecialAttack.cpp
+        src/Gameplay/Combat/RegularAttack.cpp
+        src/Gameplay/Combat/Skill.cpp
+        src/Gameplay/Combat/SkillAction.cpp
+        src/Gameplay/Combat/SkillAffectedEffect.cpp
+        src/Gameplay/Combat/SkillBullet.cpp
+        src/Gameplay/Combat/SkillHitEffect.cpp
+        src/Gameplay/Combat/SkillSound.cpp
+        src/Gameplay/Combat/SkillUseEffect.cpp
+        src/Gameplay/Physics/Foothold.cpp
+        src/Gameplay/Physics/FootholdTree.cpp
+        src/Gameplay/Physics/Physics.cpp
+        src/Graphics/Animation.cpp
+        src/Graphics/Color.cpp
+        src/Graphics/EffectLayer.cpp
+        src/Graphics/Geometry.cpp
+        src/Graphics/GraphicsGL.cpp
+        src/Graphics/RecurringEffect.cpp
+        src/Graphics/Sprite.cpp
+        src/Graphics/Text.cpp
+        src/Graphics/Texture.cpp
+        src/Net/Cryptography.cpp
+        src/Net/InPacket.cpp
+        src/Net/OutPacket.cpp
+        src/Net/PacketSwitch.cpp
+        src/Net/Session.cpp
+        src/Net/SocketAsio.cpp
+        src/Net/SocketWinsock.cpp
+        src/Net/Handlers/AttackHandlers.cpp
+        src/Net/Handlers/CashShopHandlers.cpp
+        src/Net/Handlers/CommonHandlers.cpp
+        src/Net/Handlers/InventoryHandlers.cpp
+        src/Net/Handlers/LoginHandlers.cpp
+        src/Net/Handlers/MapObjectHandlers.cpp
+        src/Net/Handlers/MessagingHandlers.cpp
+        src/Net/Handlers/NpcInteractionHandlers.cpp
+        src/Net/Handlers/PlayerHandlers.cpp
+        src/Net/Handlers/PlayerInteractionHandlers.cpp
+        src/Net/Handlers/SetFieldHandlers.cpp
+        src/Net/Handlers/TestingHandlers.cpp
+        src/Net/Handlers/Helpers/CashShopParser.cpp
+        src/Net/Handlers/Helpers/CharacterParser.cpp
+        src/Net/Handlers/Helpers/ItemParser.cpp
+        src/Net/Handlers/Helpers/LoginParser.cpp
+        src/Net/Handlers/Helpers/MovementParser.cpp
+        src/Util/GameInfo.cpp
+        src/Util/NxFiles.cpp
+        src/Util/StringHandling.cpp
+        ${CMAKE_SOURCE_DIR}/thirdparty/stb/deprecated/stb_image.c
+        )
+
+target_include_directories(glfw-example
+        PRIVATE
+        .
+        src
+        src/Audio
+        src/Character
+        src/Character/Inventory
+        src/Character/Look
+        src/Data
+        src/IO
+        src/IO/Components
+        src/IO/UITypes
+        src/IO/UITypes/Login
+        src/Gameplay
+        src/Gameplay/Combat
+        src/Gameplay/MapleMap
+        src/Gameplay/Physics
+        src/Graphics
+        src/Net
+        src/Net/Handlers
+        src/Net/Packets
+        src/Template
+        src/Util
+        SYSTEM PRIVATE
+        ${CMAKE_SOURCE_DIR}/thirdparty
+        ${CMAKE_SOURCE_DIR}/thirdparty/asio/asio/include
+        ${CMAKE_SOURCE_DIR}/thirdparty/bass/c
+        ${CMAKE_SOURCE_DIR}/thirdparty/freetype/include
+        ${CMAKE_SOURCE_DIR}/thirdparty/stb
+        )
 # add lib dependencies
-target_link_libraries(glfw-example glfw android log GLESv2)
+target_link_libraries(glfw-example glfw android log GLESv2 freetype NoLifeNx ${CMAKE_SOURCE_DIR}/thirdparty/bass/libs/arm64-v8a/libbass.so)
