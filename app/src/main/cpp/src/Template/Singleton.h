@@ -21,14 +21,12 @@ class Singleton {
 public:
     virtual ~Singleton() = default;
 
-    static T &get() { return instance_; }
+    static T& get() {
+        static T instance;  // Use a function-scope static variable
+        return instance;
+    }
 
 private:
     T &operator=(const T &) = delete;
-
-    static T instance_;
 };
-
-template<class T>
-T Singleton<T>::instance_;
 }  // namespace ms

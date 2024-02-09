@@ -30,7 +30,6 @@
 #include "Util/HardwareInfo.h"
 #include "Util/NxFiles.h"
 #include "ScreenResolution.h"
-//#include "Util/ScreenResolution.h"
 
 namespace ms {
 Game::Game() {
@@ -47,7 +46,7 @@ Error Game::init(android_app *pApp) {
         return error;
     }
     std::cout << "NxFiles init success." << std::endl;
-    if (Error error = Window::get().init()) {
+    if (Error error = Window::get().init(pApp)) {
         return error;
     }
     std::cout << "Window init success." << std::endl;
@@ -110,11 +109,9 @@ void Game::game_loop() {
              accumulator -= timestep) {
             update();
         }
-
         // Draw the game. Interpolate to account for remaining time.
         float alpha = static_cast<float>(accumulator) / timestep;
         draw(alpha);
-
         if (show_fps) {
             if (samples < 100) {
                 period += elapsed;

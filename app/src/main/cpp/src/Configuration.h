@@ -304,13 +304,13 @@ struct VSync : public Configuration::BoolEntry {
 // The normal font which will be used
 struct FontPathNormal : public Configuration::StringEntry {
     FontPathNormal() :
-        StringEntry("FontPathNormal", "fonts/Roboto/Roboto-Regular.ttf") {}
+        StringEntry("FontPathNormal", "Roboto-Regular.ttf") {}
 };
 
 // The bold font which will be used
 struct FontPathBold : public Configuration::StringEntry {
     FontPathBold() :
-        StringEntry("FontPathBold", "fonts/Roboto/Roboto-Bold.ttf") {}
+        StringEntry("FontPathBold", "Roboto-Bold.ttf") {}
 };
 
 // Music Volume

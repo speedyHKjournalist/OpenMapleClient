@@ -28,15 +28,16 @@ namespace ms {
         SCREEN = Rectangle<int16_t>(0, VWIDTH, 0, VHEIGHT);
     }
 
-    Error GraphicsGL::init() {
+    Error GraphicsGL::init(android_app *pApp) {
         // Setup parameters
         // ----------------
         const char *vertexShaderSource =
-                "#version 100\n"
-                "attribute vec4 coord;"
-                "attribute vec4 color;"
-                "varying vec2 texpos;"
-                "varying vec4 colormod;"
+                "#version 320 es\n"
+                "precision highp float;"
+                "in vec4 coord;"
+                "in vec4 color;"
+                "out vec2 texpos;"
+                "out vec4 colormod;"
                 "uniform vec2 screensize;"
                 "uniform int yoffset;"
 
@@ -50,10 +51,11 @@ namespace ms {
                 "}";
 
         const char *fragmentShaderSource =
-                "#version 100\n"
-                "precision mediump float;"
-                "varying vec2 texpos;"
-                "varying vec4 colormod;"
+                "#version 320 es\n"
+                "precision highp float;"
+                "in vec2 texpos;"
+                "in vec4 colormod;"
+                "out vec4 FragColor;"
                 "uniform sampler2D texture;"
                 "uniform vec2 atlassize;"
                 "uniform int fontregion;"
@@ -62,16 +64,16 @@ namespace ms {
                 "{"
                 "	if (texpos.y == 0.0)"
                 "	{"
-                "		gl_FragColor = colormod;"
+                "		FragColor = colormod;"
                 "	}"
                 "	else if (texpos.y <= float(fontregion))"
                 "	{"
-                "		gl_FragColor = vec4(1.0, 1.0, 1.0, texture2D(texture, texpos / "
+                "		FragColor = vec4(1.0, 1.0, 1.0, texture(texture, texpos / "
                 "atlassize).r) * colormod;"
                 "	}"
                 "	else"
                 "	{"
-                "		gl_FragColor = texture2D(texture, texpos / atlassize) * "
+                "		FragColor = texture(texture, texpos / atlassize) * "
                 "colormod;"
                 "	}"
                 "}";
@@ -195,28 +197,29 @@ namespace ms {
                      GL_UNSIGNED_BYTE,
                      nullptr);
 
-        font_border.set_y(1);
+//        font_border.set_y(1);
 
-        const std::string FONT_NORMAL = Setting<FontPathNormal>().get().load();
-        const std::string FONT_BOLD = Setting<FontPathBold>().get().load();
+//        const std::string FONT_NORMAL = Setting<FontPathNormal>().get().load();
+//        const std::string FONT_BOLD = Setting<FontPathBold>().get().load();
+//
+//        if (FONT_NORMAL.empty() || FONT_BOLD.empty()) {
+//            return Error::Code::FONT_PATH;
+//        }
+//
+//        const char *FONT_NORMAL_STR = FONT_NORMAL.c_str();
+//        const char *FONT_BOLD_STR = FONT_BOLD.c_str();
+//        AAssetManager* assetManager = pApp->activity->assetManager;
+//
+//        add_font(assetManager, FONT_NORMAL_STR, Text::Font::A11M, 0, 11);
+//        add_font(assetManager, FONT_BOLD_STR, Text::Font::A11B, 0, 11);
+//        add_font(assetManager, FONT_NORMAL_STR, Text::Font::A12M, 0, 12);
+//        add_font(assetManager, FONT_BOLD_STR, Text::Font::A12B, 0, 12);
+//        add_font(assetManager, FONT_NORMAL_STR, Text::Font::A13M, 0, 13);
+//        add_font(assetManager, FONT_BOLD_STR, Text::Font::A13B, 0, 13);
+//        add_font(assetManager, FONT_BOLD_STR, Text::Font::A15B, 0, 15);
+//        add_font(assetManager, FONT_NORMAL_STR, Text::Font::A18M, 0, 18);
 
-        if (FONT_NORMAL.empty() || FONT_BOLD.empty()) {
-            return Error::Code::FONT_PATH;
-        }
-
-        const char *FONT_NORMAL_STR = FONT_NORMAL.c_str();
-        const char *FONT_BOLD_STR = FONT_BOLD.c_str();
-
-        add_font(FONT_NORMAL_STR, Text::Font::A11M, 0, 11);
-        add_font(FONT_BOLD_STR, Text::Font::A11B, 0, 11);
-        add_font(FONT_NORMAL_STR, Text::Font::A12M, 0, 12);
-        add_font(FONT_BOLD_STR, Text::Font::A12B, 0, 12);
-        add_font(FONT_NORMAL_STR, Text::Font::A13M, 0, 13);
-        add_font(FONT_BOLD_STR, Text::Font::A13B, 0, 13);
-        add_font(FONT_BOLD_STR, Text::Font::A15B, 0, 15);
-        add_font(FONT_NORMAL_STR, Text::Font::A18M, 0, 18);
-
-        font_ymax += font_border.y();
+//        font_ymax += font_border.y();
 
         leftovers_ = QuadTree<size_t, Leftover>(
                 [](const Leftover &first, const Leftover &second) {
@@ -238,13 +241,20 @@ namespace ms {
         return Error::Code::NONE;
     }
 
-    bool GraphicsGL::add_font(const char *name,
+    bool GraphicsGL::add_font(AAssetManager *assetManager,
+                              const char *name,
                               Text::Font id,
                               FT_UInt pixelw,
                               FT_UInt pixelh) {
         FT_Face face;
+        AAsset* fontFile = AAssetManager_open(assetManager, name, AASSET_MODE_BUFFER);
+        off_t fontDataSize = AAsset_getLength(fontFile);
 
-        if (FT_New_Face(ft_library_, name, 0, &face)) {
+        FT_Byte* fontData = new FT_Byte[fontDataSize];
+        AAsset_read(fontFile, fontData, (size_t) fontDataSize);
+        AAsset_close(fontFile);
+
+        if (FT_New_Memory_Face(ft_library_, (const FT_Byte*)fontData, (FT_Long)fontDataSize, 0, &face)) {
             std::cerr << "Error: Failed to create new face." << std::endl;
             return false;
         }

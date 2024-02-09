@@ -34,7 +34,7 @@ namespace ms {
 
         ~Window() override;
 
-        Error init();
+        Error init(android_app *pApp);
 
         Error init_window();
 

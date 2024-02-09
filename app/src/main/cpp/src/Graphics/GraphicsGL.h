@@ -33,7 +33,7 @@ public:
     GraphicsGL();
 
     // Initialize all resources
-    Error init();
+    Error init(android_app *pApp);
 
     // Re-initialise after changing screen modes.
     void reinit();
@@ -110,7 +110,8 @@ public:
 private:
     void clear_internal();
 
-    bool add_font(const char *name,
+    bool add_font(AAssetManager *assetManager,
+                  const char *name,
                   Text::Font id,
                   FT_UInt width,
                   FT_UInt height);
