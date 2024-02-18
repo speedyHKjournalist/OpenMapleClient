@@ -13,6 +13,7 @@
 //
 //	You should have received a copy of the GNU Affero General Public License
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#include <android/log.h>
 #include "SocketAsio.h"
 
 #ifdef USE_ASIO
@@ -35,6 +36,8 @@ bool SocketAsio::open(const char *address, const char *port) {
     if (!error) {
         size_t result = socket_.read_some(asio::buffer(buffer_), error);
         return !error && (result == HANDSHAKE_LEN);
+    } else {
+        __android_log_print(ANDROID_LOG_ERROR, "SocketAsio", "Error: %s", error.message().c_str());
     }
 
     return !error;

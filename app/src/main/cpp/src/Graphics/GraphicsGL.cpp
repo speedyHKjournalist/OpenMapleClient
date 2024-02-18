@@ -1252,10 +1252,6 @@ namespace ms {
         glBindBuffer(GL_ARRAY_BUFFER, VBO_);
         glBufferData(GL_ARRAY_BUFFER, triangles.size() * sizeof(Quad::Vertex), triangles.data(), GL_STREAM_DRAW);
 
-        GLsizei stride = sizeof(Quad::Vertex);
-        glVertexAttribPointer(attribute_coord_, 2, GL_SHORT, GL_FALSE, stride, 0);
-        glVertexAttribPointer(attribute_color_, 4, GL_FLOAT, GL_FALSE, stride, (void*)(2 * sizeof(GLshort)));
-
         glDrawArrays(GL_TRIANGLES, 0, triangles.size());
 
         glDisableVertexAttribArray(attribute_coord_);

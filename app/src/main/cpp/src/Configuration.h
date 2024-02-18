@@ -273,7 +273,7 @@ private:
 
 // IP Address which the client will connect to
 struct ServerIP : public Configuration::StringEntry {
-    ServerIP() : StringEntry("ServerIP", "localhost") {}
+    ServerIP() : StringEntry("ServerIP", "192.168.0.102") {}
 };
 
 // Port which the client will connect to

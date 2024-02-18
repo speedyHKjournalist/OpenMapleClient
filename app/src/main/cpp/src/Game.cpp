@@ -24,12 +24,13 @@
 #include "Gameplay/Stage.h"
 #include "IO/UI.h"
 #include "IO/Window.h"
-//#include "Net/PacketProcessor.h"
+#include "Net/PacketProcessor.h"
 #include "Timer.h"
 #include "Constants.h"
 #include "Util/HardwareInfo.h"
 #include "Util/NxFiles.h"
 #include "ScreenResolution.h"
+#include "Singleton.h"
 
 namespace ms {
 Game::Game() {
@@ -38,9 +39,9 @@ Game::Game() {
 }
 
 Error Game::init(android_app *pApp) {
-//    if (Error error = PacketProcessor::get().init()) {
-//        return error;
-//    }
+    if (Error error = PacketProcessor::get().init()) {
+        return error;
+    }
     std::cout << "Session init success." << std::endl;
     if (Error error = NxFiles::init(pApp)) {
         return error;
@@ -73,7 +74,7 @@ void Game::update() {
     Window::get().update();
     Stage::get().update();
     UI::get().update();
-//    PacketProcessor::get().process();
+    PacketProcessor::get().process();
     Music::update_context();
 }
 
@@ -85,8 +86,8 @@ void Game::draw(float alpha) {
 }
 
 bool Game::is_running() {
-//    return PacketProcessor::get().is_connected() && UI::get().not_quitted()
-//           && Window::get().not_closed();
+    return PacketProcessor::get().is_connected() && UI::get().not_quitted()
+           && Window::get().not_closed();
     return true;
 }
 
