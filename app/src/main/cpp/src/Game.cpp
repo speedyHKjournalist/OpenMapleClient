@@ -39,6 +39,8 @@ Game::Game() {
 }
 
 Error Game::init(android_app *pApp) {
+    Constants::Constants::get().set_viewheight(ANativeWindow_getHeight(pApp->window));
+    Constants::Constants::get().set_viewwidth(ANativeWindow_getWidth(pApp->window));
     if (Error error = PacketProcessor::get().init()) {
         return error;
     }

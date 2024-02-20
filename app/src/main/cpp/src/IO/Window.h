@@ -36,7 +36,7 @@ namespace ms {
 
         Error init(android_app *pApp);
 
-        Error init_window();
+        Error init_window(android_app *pApp);
 
         bool not_closed() const;
 

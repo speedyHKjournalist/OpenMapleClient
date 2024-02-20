@@ -27,7 +27,7 @@ namespace ms {
     Window::Window() :
             glwnd_(nullptr),
             context_(nullptr),
-            fullscreen_(false),
+            fullscreen_(true),
             opacity_(1.0f),
             opc_step_(0.0f),
             width_(Constants::Constants::get().get_viewwidth()),
@@ -102,7 +102,6 @@ namespace ms {
     }
 
     Error Window::init(android_app *pApp) {
-        fullscreen_ = Setting<Fullscreen>::get().load();
         glfwSetErrorCallback(error_callback);
         if (!glfwInit()) {
             return Error::Code::GLFW;
@@ -116,10 +115,10 @@ namespace ms {
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
 //        context_ = glfwCreateWindow(1, 1, "", nullptr, nullptr);
 //        glfwMakeContextCurrent(context_);
-        glwnd_ = glfwCreateWindow(width_,
-                                  height_,
+        glwnd_ = glfwCreateWindow(Constants::Constants::get().get_viewwidth(),
+                                  Constants::Constants::get().get_viewheight(),
                                   Configuration::get().get_title().c_str(),
-                                  fullscreen_ ? glfwGetPrimaryMonitor() : nullptr,
+                                  nullptr,
                                   nullptr);
         glfwMakeContextCurrent(glwnd_);
 
@@ -130,10 +129,10 @@ namespace ms {
             return error;
         }
 
-        return init_window();
+        return init_window(pApp);
     }
 
-    Error Window::init_window() {
+    Error Window::init_window(android_app *pApp) {
 //        if (glwnd_) {
 //            glfwDestroyWindow(glwnd_);
 //        }
@@ -152,8 +151,7 @@ namespace ms {
 
         bool vsync = Setting<VSync>::get().load();
         glfwSwapInterval(vsync ? 1 : 0);
-
-        glViewport(0, 0, width_, height_);
+        glViewport(0, 0, Constants::Constants::get().get_viewwidth(), Constants::Constants::get().get_viewheight());
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
 
