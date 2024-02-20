@@ -29,8 +29,8 @@ namespace ms {
     }
 
     Error GraphicsGL::init(android_app *pApp) {
-        // Setup parameters
-        // ----------------
+        // Set image to center, multiplied by phone (screensize y / 300), image resolution is 800 * 600
+        // Frag color changes to bgra because color is incorrect on Android platform
         const char *vertexShaderSource =
                 "#version 320 es\n"
                 "precision highp float;"
@@ -43,8 +43,8 @@ namespace ms {
 
                 "void main(void)"
                 "{"
-                "	float x = -1.0 + coord.x * 2.0 / screensize.x;"
-                "	float y = 1.0 - (coord.y + float(yoffset)) * 2.0 / screensize.y;"
+                "	float x = ((coord.x - 400.0) / screensize.x) * (screensize.y / 300.0);"
+                "	float y = ((300.0 - (coord.y + float(yoffset))) / screensize.y) * (screensize.y / 300.0);"
                 "   gl_Position = vec4(x, y, 0.0, 1.0);"
                 "	texpos = coord.zw;"
                 "	colormod = color;"
@@ -73,7 +73,7 @@ namespace ms {
                 "	}"
                 "	else"
                 "	{"
-                "		FragColor = texture(texture, texpos / atlassize) * "
+                "		FragColor = texture(texture, texpos / atlassize).bgra * "
                 "colormod;"
                 "	}"
                 "}";
@@ -197,29 +197,29 @@ namespace ms {
                      GL_UNSIGNED_BYTE,
                      nullptr);
 
-//        font_border.set_y(1);
+        font_border.set_y(1);
 
-//        const std::string FONT_NORMAL = Setting<FontPathNormal>().get().load();
-//        const std::string FONT_BOLD = Setting<FontPathBold>().get().load();
-//
-//        if (FONT_NORMAL.empty() || FONT_BOLD.empty()) {
-//            return Error::Code::FONT_PATH;
-//        }
-//
-//        const char *FONT_NORMAL_STR = FONT_NORMAL.c_str();
-//        const char *FONT_BOLD_STR = FONT_BOLD.c_str();
-//        AAssetManager* assetManager = pApp->activity->assetManager;
-//
-//        add_font(assetManager, FONT_NORMAL_STR, Text::Font::A11M, 0, 11);
-//        add_font(assetManager, FONT_BOLD_STR, Text::Font::A11B, 0, 11);
-//        add_font(assetManager, FONT_NORMAL_STR, Text::Font::A12M, 0, 12);
-//        add_font(assetManager, FONT_BOLD_STR, Text::Font::A12B, 0, 12);
-//        add_font(assetManager, FONT_NORMAL_STR, Text::Font::A13M, 0, 13);
-//        add_font(assetManager, FONT_BOLD_STR, Text::Font::A13B, 0, 13);
-//        add_font(assetManager, FONT_BOLD_STR, Text::Font::A15B, 0, 15);
-//        add_font(assetManager, FONT_NORMAL_STR, Text::Font::A18M, 0, 18);
+        const std::string FONT_NORMAL = Setting<FontPathNormal>().get().load();
+        const std::string FONT_BOLD = Setting<FontPathBold>().get().load();
 
-//        font_ymax += font_border.y();
+        if (FONT_NORMAL.empty() || FONT_BOLD.empty()) {
+            return Error::Code::FONT_PATH;
+        }
+
+        const char *FONT_NORMAL_STR = FONT_NORMAL.c_str();
+        const char *FONT_BOLD_STR = FONT_BOLD.c_str();
+        AAssetManager* assetManager = pApp->activity->assetManager;
+
+        add_font(assetManager, FONT_NORMAL_STR, Text::Font::A11M, 0, 11);
+        add_font(assetManager, FONT_BOLD_STR, Text::Font::A11B, 0, 11);
+        add_font(assetManager, FONT_NORMAL_STR, Text::Font::A12M, 0, 12);
+        add_font(assetManager, FONT_BOLD_STR, Text::Font::A12B, 0, 12);
+        add_font(assetManager, FONT_NORMAL_STR, Text::Font::A13M, 0, 13);
+        add_font(assetManager, FONT_BOLD_STR, Text::Font::A13B, 0, 13);
+        add_font(assetManager, FONT_BOLD_STR, Text::Font::A15B, 0, 15);
+        add_font(assetManager, FONT_NORMAL_STR, Text::Font::A18M, 0, 18);
+
+        font_ymax += font_border.y();
 
         leftovers_ = QuadTree<size_t, Leftover>(
                 [](const Leftover &first, const Leftover &second) {
