@@ -22,6 +22,7 @@
 #include "stb/stb_image.h"
 
 #include <utility>
+#include <android/log.h>
 
 namespace ms {
     Window::Window() :
@@ -42,12 +43,16 @@ namespace ms {
         std::cout << "GLFW error [" << no << "]: " << description << std::endl;
     }
 
-    void key_callback(GLFWwindow *, int key, int scancode, int action, int mods) {
-        UI::get().send_key(key, action != GLFW_RELEASE);
-    }
-
-    void char_callback(GLFWwindow *, unsigned int key) {
-        UI::get().send_key(key);
+    void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, int32_t metastate) {
+    // Found that in glfw-android GLFW_PRESS and GLFW_RELEASE are reversed
+        UI::get().send_key(scancode, action != GLFW_PRESS);
+        bool shiftPressed = (metastate == AMETA_SHIFT_ON || metastate == AMETA_CAPS_LOCK_ON);
+        int ascii = UI::get().get_keyboard().Key2Character(scancode, shiftPressed);
+        bool specialCharacter = UI::get().get_keyboard().IsSpecialCharacter();
+        if(action == GLFW_PRESS && !specialCharacter) {
+            // char_callback does not work, so handle the keycode manually in key_callback
+            UI::get().send_key(ascii);
+        }
     }
 
     std::chrono::time_point<std::chrono::steady_clock> start =
@@ -165,7 +170,6 @@ namespace ms {
 
         glfwSetInputMode(glwnd_, GLFW_STICKY_KEYS, GL_TRUE);
         glfwSetKeyCallback(glwnd_, key_callback);
-        glfwSetCharCallback(glwnd_, char_callback);
         glfwSetMouseButtonCallback(glwnd_, mousekey_callback);
         glfwSetCursorPosCallback(glwnd_, cursor_callback);
         glfwSetWindowFocusCallback(glwnd_, focus_callback);

@@ -1522,7 +1522,7 @@ typedef void (* GLFWscrollfun)(GLFWwindow*,double,double);
  *
  *  @ingroup input
  */
-typedef void (* GLFWkeyfun)(GLFWwindow*,int,int,int,int);
+typedef void (* GLFWkeyfun)(GLFWwindow*,int,int,int,int,int);
 
 /*! @brief The function pointer type for Unicode character callbacks.
  *

@@ -4,3 +4,5 @@
 
 #include "src/MSClient.h"
 #include "Game.h"
+
+void keep_screen_always_on(android_app *app);

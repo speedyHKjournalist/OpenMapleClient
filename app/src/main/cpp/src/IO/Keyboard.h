@@ -68,10 +68,16 @@ public:
 
     Mapping get_text_mapping(int32_t keycode, bool shift) const;
 
+    int Key2Character(int scancode, bool shiftPressed);
+
+    bool IsSpecialCharacter();
+
 private:
     std::map<int32_t, Mapping> keymap_;
     std::map<int32_t, Mapping> maple_keys_;
     std::map<int32_t, KeyAction::Id> text_actions_;
     std::map<int32_t, bool> key_state_;
+
+    bool specialCharacters;
 };
 }  // namespace ms

@@ -103,7 +103,7 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event)
         }
 
     } else if (AINPUT_EVENT_TYPE_KEY == ev_type) {
-        _glfwInputKey(_glfw.windowListHead, 0 , AKeyEvent_getKeyCode(event), GLFW_PRESS, 0);
+        _glfwInputKey(_glfw.windowListHead, 0 , AKeyEvent_getKeyCode(event), AKeyEvent_getAction(event), 0, AKeyEvent_getMetaState(event));
     }
 
     return 0;

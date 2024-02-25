@@ -258,7 +258,7 @@ static GLFWbool parseMapping(_GLFWmapping* mapping, const char* string)
 
 // Notifies shared code of a physical key event
 //
-void _glfwInputKey(_GLFWwindow* window, int key, int scancode, int action, int mods)
+void _glfwInputKey(_GLFWwindow* window, int key, int scancode, int action, int mods, int32_t metastate)
 {
     if (key >= 0 && key <= GLFW_KEY_LAST)
     {
@@ -283,7 +283,7 @@ void _glfwInputKey(_GLFWwindow* window, int key, int scancode, int action, int m
         mods &= ~(GLFW_MOD_CAPS_LOCK | GLFW_MOD_NUM_LOCK);
 
     if (window->callbacks.key)
-        window->callbacks.key((GLFWwindow*) window, key, scancode, action, mods);
+        window->callbacks.key((GLFWwindow*) window, key, scancode, action, mods, metastate);
 }
 
 // Notifies shared code of a Unicode codepoint input event

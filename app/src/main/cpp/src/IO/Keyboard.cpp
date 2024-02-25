@@ -100,7 +100,7 @@ namespace ms {
                                        0,  // 80
                                        AKEYCODE_PAGE_DOWN,
                                        AKEYCODE_INSERT,
-                                       AKEYCODE_FORWARD_DEL,
+                                       AKEYCODE_DEL,
                                        AKEYCODE_ESCAPE,
                                        AKEYCODE_CTRL_RIGHT,
                                        AKEYCODE_SHIFT_RIGHT,
@@ -157,6 +157,7 @@ Keyboard::Keyboard() {
     text_actions_[AKEYCODE_MOVE_HOME] = KeyAction::Id::HOME;
     text_actions_[AKEYCODE_MOVE_END] = KeyAction::Id::END;
     text_actions_[AKEYCODE_FORWARD_DEL] = KeyAction::Id::DELETE;
+    specialCharacters = false;
 }
 
 int32_t Keyboard::left_shift_code() const {
@@ -169,7 +170,7 @@ int32_t Keyboard::right_shift_code() const {
 
 int32_t Keyboard::capslock_code() const {
     // Android doesn't have a direct key code for caps lock
-    return 0;
+    return AKEYCODE_CAPS_LOCK;
 }
 
 int32_t Keyboard::left_ctrl_code() const {
@@ -178,6 +179,10 @@ int32_t Keyboard::left_ctrl_code() const {
 
 int32_t Keyboard::right_ctrl_code() const {
     return AKEYCODE_CTRL_RIGHT;
+}
+
+bool Keyboard::IsSpecialCharacter() {
+        return specialCharacters;
 }
 
 std::map<int32_t, Keyboard::Mapping> Keyboard::get_maplekeys() const {
@@ -261,5 +266,74 @@ Keyboard::Mapping Keyboard::get_maple_mapping(int32_t keycode) const {
     }
 
     return iter->second;
+}
+
+int Keyboard::Key2Character(int scancode, bool shiftPressed) {
+    int ascii = 0;
+    bool specialCharacters = false;
+    if (scancode >= AKEYCODE_A && scancode <= AKEYCODE_Z) {
+        ascii = scancode + 'a' - AKEYCODE_A;
+        if (shiftPressed) {
+            ascii = std::toupper(ascii);
+        }
+    } else if (scancode >= AKEYCODE_0 && scancode <= AKEYCODE_9) {
+        ascii = scancode + '0' - AKEYCODE_0;
+
+    } else {
+        switch (scancode) {
+            case AKEYCODE_SPACE:
+                ascii = ' ';
+                break;
+            case AKEYCODE_ENTER:
+                ascii = '\n';
+                break;
+            case AKEYCODE_DEL:
+                ascii = '\b';
+                specialCharacters = true;
+                break;
+            case AKEYCODE_TAB:
+                ascii = '\t';
+                specialCharacters = true;
+                break;
+            case AKEYCODE_ESCAPE:
+                ascii = 27;
+                break;
+            case AKEYCODE_GRAVE:
+                ascii = shiftPressed ? '~' : '`';
+                break;
+            case AKEYCODE_MINUS:
+                ascii = shiftPressed ? '_' : '-';
+                break;
+            case AKEYCODE_EQUALS:
+                ascii = shiftPressed ? '+' : '=';
+                break;
+            case AKEYCODE_LEFT_BRACKET:
+                ascii = shiftPressed ? '{' : '[';
+                break;
+            case AKEYCODE_RIGHT_BRACKET:
+                ascii = shiftPressed ? '}' : ']';
+                break;
+            case AKEYCODE_BACKSLASH:
+                ascii = shiftPressed ? '|' : '\\';
+                break;
+            case AKEYCODE_SEMICOLON:
+                ascii = shiftPressed ? ':' : ';';
+                break;
+            case AKEYCODE_APOSTROPHE:
+                ascii = shiftPressed ? '"' : '\'';
+                break;
+            case AKEYCODE_COMMA:
+                ascii = shiftPressed ? '<' : ',';
+                break;
+            case AKEYCODE_PERIOD:
+                ascii = shiftPressed ? '>' : '.';
+                break;
+            case AKEYCODE_SLASH:
+                ascii = shiftPressed ? '?' : '/';
+                break;
+        }
+    }
+    this->specialCharacters = specialCharacters;
+    return ascii;
 }
 }  // namespace ms
