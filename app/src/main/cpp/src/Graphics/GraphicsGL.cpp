@@ -315,6 +315,24 @@ namespace ms {
                 continue;
             }
 
+            auto g = face->glyph;
+
+            // Render the glyph in 8-bit grayscale mode
+            FT_Render_Glyph(g, FT_RENDER_MODE_NORMAL);
+
+            // Convert grayscale to BGRA
+            FT_Byte* bgraBuffer = new FT_Byte[g->bitmap.rows * g->bitmap.width * 4];
+            for (int i = 0; i < g->bitmap.rows * g->bitmap.width; ++i) {
+                // Grayscale value
+                auto intensity = g->bitmap.buffer[i];
+
+                // Set BGRA components
+                bgraBuffer[i * 4] = intensity;          // Blue channel
+                bgraBuffer[i * 4 + 1] = intensity;      // Green channel
+                bgraBuffer[i * 4 + 2] = intensity;      // Red channel
+                bgraBuffer[i * 4 + 3] = 255;            // Alpha channel (fully opaque)
+            }
+
             auto ax = static_cast<GLshort>(g->advance.x >> 6);
             auto ay = static_cast<GLshort>(g->advance.y >> 6);
             auto l = static_cast<GLshort>(g->bitmap_left);
@@ -328,9 +346,10 @@ namespace ms {
                             oy,
                             w,
                             h,
-                            GL_LUMINANCE,
+                            GL_RGBA,
                             GL_UNSIGNED_BYTE,
-                            g->bitmap.buffer);
+                            bgraBuffer);
+            delete[] bgraBuffer;
 
             Offset offset = Offset(ox, oy, w, h);
             fonts_[id].chars[c] = { ax, ay, w, h, l, t, offset };
@@ -1233,8 +1252,8 @@ namespace ms {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        GLsizeiptr csize = quads_.size() * sizeof(Quad);
-        GLsizeiptr fsize = quads_.size() * Quad::LENGTH;
+//        GLsizeiptr csize = quads_.size() * sizeof(Quad);
+//        GLsizeiptr fsize = quads_.size() * Quad::LENGTH;
 
         std::vector<Quad::Vertex> triangles;
         for (const Quad& quad : quads_) {

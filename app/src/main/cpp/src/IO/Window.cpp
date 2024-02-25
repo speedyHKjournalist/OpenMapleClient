@@ -42,7 +42,7 @@ namespace ms {
         std::cout << "GLFW error [" << no << "]: " << description << std::endl;
     }
 
-    void key_callback(GLFWwindow *, int key, int, int action, int) {
+    void key_callback(GLFWwindow *, int key, int scancode, int action, int mods) {
         UI::get().send_key(key, action != GLFW_RELEASE);
     }
 
