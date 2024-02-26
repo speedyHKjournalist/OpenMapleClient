@@ -29,7 +29,7 @@ namespace ms {
     }
 
     Error GraphicsGL::init(android_app *pApp) {
-        // Set image to center, multiplied by phone (screensize y / 300), image resolution is 800 * 600
+        // Set image to left top, multiplied by phone (screensize y / 300), image resolution is 800 * 600
         // Frag color changes to bgra because color is incorrect on Android platform
         const char *vertexShaderSource =
                 "#version 320 es\n"
@@ -43,8 +43,8 @@ namespace ms {
 
                 "void main(void)"
                 "{"
-                "	float x = ((coord.x - 400.0) / screensize.x) * (screensize.y / 300.0);"
-                "	float y = ((300.0 - (coord.y + float(yoffset))) / screensize.y) * (screensize.y / 300.0);"
+                "	float x = (-1.0 + coord.x * (screensize.y / 300.0) / screensize.x);"
+                "	float y = 1.0 - (coord.y + float(yoffset)) / 300.0;"
                 "   gl_Position = vec4(x, y, 0.0, 1.0);"
                 "	texpos = coord.zw;"
                 "	colormod = color;"

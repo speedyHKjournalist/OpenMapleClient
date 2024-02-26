@@ -67,7 +67,5 @@ namespace ms {
         std::function<void()> fade_procedure_;
         int16_t width_;
         int16_t height_;
-
-        std::string get_current_working_dir();
     };
 }  // namespace ms

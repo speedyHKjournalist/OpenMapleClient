@@ -11,7 +11,6 @@ int entrance(struct android_app *app) {
 }
 
 void keep_screen_always_on(android_app *app) {
-    ANativeWindow* window = app->window;
     ANativeActivity* activity = app->activity;
     // Get the native activity's JNIEnv
     JNIEnv* env;

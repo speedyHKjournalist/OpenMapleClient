@@ -118,8 +118,6 @@ namespace ms {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-//        context_ = glfwCreateWindow(1, 1, "", nullptr, nullptr);
-//        glfwMakeContextCurrent(context_);
         glwnd_ = glfwCreateWindow(Constants::Constants::get().get_viewwidth(),
                                   Constants::Constants::get().get_viewheight(),
                                   Configuration::get().get_title().c_str(),
@@ -138,21 +136,9 @@ namespace ms {
     }
 
     Error Window::init_window(android_app *pApp) {
-//        if (glwnd_) {
-//            glfwDestroyWindow(glwnd_);
-//        }
-
-//        glwnd_ = glfwCreateWindow(width_,
-//                                  height_,
-//                                  Configuration::get().get_title().c_str(),
-//                                  fullscreen_ ? glfwGetPrimaryMonitor() : nullptr,
-//                                  context_);
-
         if (!glwnd_) {
             return Error::Code::WINDOW;
         }
-
-//        glfwMakeContextCurrent(glwnd_);
 
         bool vsync = Setting<VSync>::get().load();
         glfwSwapInterval(vsync ? 1 : 0);
@@ -175,24 +161,6 @@ namespace ms {
         glfwSetWindowFocusCallback(glwnd_, focus_callback);
         glfwSetScrollCallback(glwnd_, scroll_callback);
         glfwSetWindowCloseCallback(glwnd_, close_callback);
-
-//        std::string icon_path = get_current_working_dir() + "/Icon.png";
-//        GLFWimage images[1];
-//
-//        auto *stbi = stbi_load(icon_path.c_str(),
-//                               &images[0].width,
-//                               &images[0].height,
-//                               nullptr,
-//                               4);
-//
-//        if (stbi == nullptr) {
-//            return Error(Error::Code::MISSING_ICON, stbi_failure_reason());
-//        }
-//
-//        images[0].pixels = stbi;
-//
-//        glfwSetWindowIcon(glwnd_, 1, images);
-//        stbi_image_free(images[0].pixels);
 
         GraphicsGL::get().reinit();
 
@@ -278,12 +246,5 @@ namespace ms {
 //            init_window();
             glfwPollEvents();
         }
-    }
-
-    std::string Window::get_current_working_dir(void) {
-        char buff[FILENAME_MAX];
-        GetCurrentDir(buff, FILENAME_MAX);
-        std::string current_working_dir(buff);
-        return current_working_dir;
     }
 }  // namespace ms
