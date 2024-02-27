@@ -1,3 +1,0 @@
-/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/_deps/stb-subbuild/CMakeFiles/stb-populate.dir
-/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/_deps/stb-subbuild/CMakeFiles/edit_cache.dir
-/Users/renruisi/Downloads/glfw-android-example/app/.cxx/Debug/295s6r6h/arm64-v8a/_deps/stb-subbuild/CMakeFiles/rebuild_cache.dir
