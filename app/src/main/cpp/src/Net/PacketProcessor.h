@@ -28,7 +28,7 @@ class PacketProcessor : public Singleton<PacketProcessor> {
 public:
     PacketProcessor() : session_(std::make_unique<PacketSwitch>()) {}
 
-    auto init() { return session_.init(); }
+    auto init(android_app *pApp) { return session_.init(pApp); }
 
     /**
      * @brief Process outgoing data.

@@ -13,6 +13,7 @@
 //
 //	You should have received a copy of the GNU Affero General Public License
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#include <android_native_app_glue.h>
 #include "Session.h"
 
 #include "../Configuration.h"
@@ -43,8 +44,29 @@ bool Session::init(const char *host, const char *port) {
     return is_connected_;
 }
 
-Error Session::init() {
-    std::string HOST = Setting<ServerIP>::get().load();
+std::string Session::readHostIP(android_app* pApp) {
+    std::string filePath = std::string(pApp->activity->externalDataPath) + "/hostip.txt";
+    FILE* file = fopen(filePath.c_str(), "rb");
+    std::string hostIP;
+
+    if (file != nullptr) {
+        char buffer[256]; // Buffer to store read data
+        size_t bytesRead = fread(buffer, 1, sizeof(buffer), file);
+        fclose(file);
+
+        // Ensure the read operation succeeded
+        if (bytesRead > 0) {
+            // Convert the buffer to a string
+            hostIP.assign(buffer, bytesRead);
+        }
+    }
+
+    return hostIP;
+}
+
+Error Session::init(android_app *pApp) {
+//    std::string HOST = Setting<ServerIP>::get().load();
+    std::string HOST = readHostIP(pApp);
     std::string PORT = Setting<ServerPort>::get().load();
 
     if (!init(HOST.c_str(), PORT.c_str())) {

@@ -21,12 +21,6 @@
 
 namespace ms::NxFiles {
 Error init(android_app *pApp) {
-//    for (const auto *filename : filenames) {
-//        if (std::ifstream {filePath + filename }.good() == false) {
-//            return Error(Error::Code::MISSING_FILE, filename);
-//        }
-//    }
-
     try {
         nl::nx::load_all(pApp);
     } catch (const std::exception &ex) {
