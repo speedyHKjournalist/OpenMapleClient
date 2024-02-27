@@ -57,3 +57,4 @@ freeline_project_description.json
 
 
 app/.cxx/*
+*.DS_Store
