@@ -86,8 +86,9 @@ namespace ms {
     }
 
     void cursor_callback(GLFWwindow *, double xpos, double ypos) {
-        auto x = static_cast<int16_t>(xpos);
-        auto y = static_cast<int16_t>(ypos);
+        double ratio_y = 600.0 / Constants::Constants::get().get_viewheight();
+        auto x = static_cast<int16_t>(xpos * ratio_y);
+        auto y = static_cast<int16_t>(ypos * ratio_y) ;
         Point<int16_t> pos = Point<int16_t>(x, y);
         UI::get().send_cursor(pos);
     }
