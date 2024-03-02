@@ -1,3 +1,0 @@
-repository='https://github.com/brackeen/glfm.git'
-module=''
-tag='origin'
