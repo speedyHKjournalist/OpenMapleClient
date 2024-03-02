@@ -17,9 +17,9 @@
 
 #include <array>
 #include <cstdint>
-#include <android_native_app_glue.h>
 
 #include "../Error.h"
+#include "glfm.h"
 
 namespace ms::NxFiles {
 // Number of needed files
@@ -38,5 +38,5 @@ constexpr std::array<const char *, NUM_FILES> filenames = {
 
 // Initialize NX
 // When successful test if the UI file is the correct version
-Error init(android_app *pApp);
+Error init(GLFMDisplay *pApp);
 }  // namespace ms::NxFiles

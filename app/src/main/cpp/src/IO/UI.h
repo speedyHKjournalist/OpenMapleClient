@@ -57,7 +57,7 @@ public:
 
     void send_cursor(Point<int16_t> cursorpos, Cursor::State cursorstate);
 
-    void send_focus(int focused);
+    void send_focus(bool focused);
 
     void send_scroll(double yoffset);
 

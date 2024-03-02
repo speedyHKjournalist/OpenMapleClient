@@ -30,9 +30,9 @@ namespace nx
 {
 std::vector<std::unique_ptr<file>> files;
 std::string filePath;
-bool exists(std::string name, android_app *pApp)
+bool exists(std::string name, GLFMDisplay *pApp)
 {
-    filePath = std::string(pApp->activity->externalDataPath);
+    filePath = std::string(((ANativeActivity*)glfmGetAndroidActivity(pApp))->externalDataPath);
     FILE* file = fopen((filePath + "/" + name).c_str(), "rb");
 
     if (file != nullptr) {
@@ -48,7 +48,7 @@ node add_file(std::string name)
     return *files.back();
 }
 node base, character, effect, etc, item, map, mapPretty, mapLatest, map001, mob, morph, npc, quest, reactor, skill, sound, string, tamingmob, ui;
-void load_all(android_app *pApp)
+void load_all(GLFMDisplay *pApp)
 {
     if (exists("Base.nx", pApp)) {
         base = add_file("Base.nx");

@@ -14,7 +14,6 @@
 //	You should have received a copy of the GNU Affero General Public License
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "GraphicsGL.h"
-#include "glfw/deps/glad_gl.c"
 #include <algorithm>
 #include <iostream>
 
@@ -28,7 +27,7 @@ namespace ms {
         SCREEN = Rectangle<int16_t>(0, VWIDTH, 0, VHEIGHT);
     }
 
-    Error GraphicsGL::init(android_app *pApp) {
+    Error GraphicsGL::init(GLFMDisplay *pApp) {
         // Set image to left top, multiplied by phone (screensize y / 300), image resolution is 800 * 600
         // Frag color changes to bgra because color is incorrect on Android platform
         const char *vertexShaderSource =
@@ -83,13 +82,7 @@ namespace ms {
         GLint success;
         GLchar infoLog[bufSize];
 
-        if (!gladLoadGL(glfwGetProcAddress)) {
-            printf("Something went wrong!\n");
-            exit(-1);
-        }
-
         std::cout << "Using OpenGL " << glGetString(GL_VERSION) << std::endl;
-        // std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
 
         if (FT_Init_FreeType(&ft_library_)) {
             return Error::Code::FREETYPE;
@@ -208,7 +201,7 @@ namespace ms {
 
         const char *FONT_NORMAL_STR = FONT_NORMAL.c_str();
         const char *FONT_BOLD_STR = FONT_BOLD.c_str();
-        AAssetManager* assetManager = pApp->activity->assetManager;
+        AAssetManager* assetManager = ((ANativeActivity*)glfmGetAndroidActivity(pApp))->assetManager;
 
         add_font(assetManager, FONT_NORMAL_STR, Text::Font::A11M, 0, 11);
         add_font(assetManager, FONT_BOLD_STR, Text::Font::A11B, 0, 11);

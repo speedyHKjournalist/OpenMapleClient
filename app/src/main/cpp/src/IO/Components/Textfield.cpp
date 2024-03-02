@@ -20,6 +20,7 @@
 
 #include "../../Util/StringHandling.h"
 #include "../UI.h"
+#include "IO/Window.h"
 
 namespace ms {
 Textfield::Textfield() :
@@ -93,6 +94,7 @@ void Textfield::set_state(State st) {
         }
 
         if (state_ == State::FOCUSED) {
+            glfmSetKeyboardVisible(Window::get().get_display(), true);
             UI::get().focus_textfield(this);
         }
     }

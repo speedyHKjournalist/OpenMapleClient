@@ -17,7 +17,7 @@
 //////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "nxfwd.hpp"
-#include <android_native_app_glue.h>
+#include "../glfm/include/glfm.h"
 #include <android/asset_manager.h>
 
 namespace nl::nx
@@ -28,5 +28,5 @@ extern node base, character, effect, etc, item, map, mapPretty, mapLatest, map00
 //! Loads the pre-defined nodes from a standard setup of NX files for
 //! MapleStory.
 //! Only call this function once.
-void load_all(android_app *pApp);
+void load_all(GLFMDisplay *pApp);
 } // namespace nl::nx

@@ -1,14 +1,11 @@
 cmake_minimum_required(VERSION 3.4.1)
 add_compile_definitions(NDK_DEBUG=1)
-set(GLFW_BUILD_EXAMPLES OFF CACHE STRING "" FORCE)
-set(GLFW_BUILD_TESTS    OFF CACHE STRING "" FORCE)
-set(GLFW_INSTALL        OFF CACHE STRING "" FORCE)
 
 add_subdirectory(thirdparty)
 include(thirdparty/Deps.cmake)
-include_directories(thirdparty/glfw/include
-        thirdparty/glfw/deps
-        ${ANDROID_NDK}/sources/android/native_app_glue/)
+#include_directories(thirdparty/glfw/include
+#        thirdparty/glfw/deps
+#        ${ANDROID_NDK}/sources/android/native_app_glue/)
 # build native_app_glue as a static lib
 set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 # now build app's shared lib
@@ -21,7 +18,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_SHARED_LINKER_FLAGS
     "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
-add_library(glfw-example SHARED gl.cpp
+add_library(glfw-example SHARED
+        gl.cpp
         src/Game.cpp
         src/Configuration.cpp
         src/Audio/Audio.cpp
@@ -250,6 +248,7 @@ target_include_directories(glfw-example
         ${CMAKE_SOURCE_DIR}/thirdparty/bass/c
         ${CMAKE_SOURCE_DIR}/thirdparty/freetype/include
         ${CMAKE_SOURCE_DIR}/thirdparty/stb
+        ${CMAKE_SOURCE_DIR}/thirdparty/glfm/include
         )
 # add lib dependencies
-target_link_libraries(glfw-example glfw android log GLESv2 freetype NoLifeNx ${CMAKE_SOURCE_DIR}/thirdparty/bass/libs/arm64-v8a/libbass.so)
+target_link_libraries(glfw-example glfm android log GLESv3 freetype NoLifeNx ${CMAKE_SOURCE_DIR}/thirdparty/bass/libs/arm64-v8a/libbass.so)

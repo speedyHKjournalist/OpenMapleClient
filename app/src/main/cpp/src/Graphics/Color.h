@@ -17,7 +17,7 @@
 
 #include <algorithm>
 #include <array>
-#include <glad/include/glad.h>
+#include "GLES3/gl32.h"
 
 namespace ms {
 // Simple color class which stores RGBA components

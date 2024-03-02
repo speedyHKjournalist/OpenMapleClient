@@ -15,8 +15,8 @@
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #pragma once
 
-#include <android_native_app_glue.h>
 #include "Error.h"
+#include "glfm.h"
 
 namespace ms {
 class Game {
@@ -25,15 +25,15 @@ public:
 
     bool is_running();
 
-    void start(android_app *pApp);
+    void start(GLFMDisplay *pApp);
 
     void game_loop();
-
-private:
-    Error init(android_app *pApp);
 
     void update();
 
     void draw(float alpha);
+
+private:
+    Error init(GLFMDisplay *pApp);
 };
 }  // namespace ms
