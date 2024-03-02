@@ -17,14 +17,14 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include "glfw/deps/glad/gl.h"
+#include "GLES3/gl32.h"
 #include <nlnx/bitmap.hpp>
-#include <android_native_app_glue.h>
 
 #include "../Constants.h"
 #include "../Error.h"
 #include "../Util/QuadTree.h"
 #include "Text.h"
+#include "glfm.h"
 
 namespace ms {
 // Graphics engine which uses OpenGL
@@ -33,7 +33,7 @@ public:
     GraphicsGL();
 
     // Initialize all resources
-    Error init(android_app *pApp);
+    Error init(GLFMDisplay *pApp);
 
     // Re-initialise after changing screen modes.
     void reinit();

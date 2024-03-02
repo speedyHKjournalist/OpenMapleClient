@@ -103,7 +103,7 @@ void UI::send_cursor(Point<int16_t> cursorpos, Cursor::State cursorstate) {
     cursor_.set_position(cursorpos);
 }
 
-void UI::send_focus(int focused) {
+void UI::send_focus(bool focused) {
     if (focused) {
         // The window gained input focus
         uint8_t sfxvolume = Setting<SFXVolume>::get().load();
@@ -157,14 +157,14 @@ void UI::doubleclick() {
 }
 
 void UI::send_key(int32_t keycode, bool pressed) {
-    if ((is_key_down_[AKEYCODE_ALT_LEFT] || is_key_down_[AKEYCODE_ALT_RIGHT])
-        && (is_key_down_[AKEYCODE_ENTER] || is_key_down_[AKEYCODE_NUMPAD_ENTER])) {
+    if ((is_key_down_[GLFMKeyCodeAltLeft] || is_key_down_[GLFMKeyCodeAltRight])
+        && (is_key_down_[GLFMKeyCodeEnter] || is_key_down_[GLFMKeyCodeNumpadEnter])) {
         Window::get().toggle_fullscreen();
 
-        is_key_down_[AKEYCODE_ALT_LEFT] = false;
-        is_key_down_[AKEYCODE_ALT_RIGHT] = false;
-        is_key_down_[AKEYCODE_ENTER] = false;
-        is_key_down_[AKEYCODE_NUMPAD_ENTER] = false;
+        is_key_down_[GLFMKeyCodeAltLeft] = false;
+        is_key_down_[GLFMKeyCodeAltRight] = false;
+        is_key_down_[GLFMKeyCodeEnter] = false;
+        is_key_down_[GLFMKeyCodeNumpadEnter] = false;
 
         return;
     }
@@ -210,11 +210,11 @@ void UI::send_key(int32_t keycode, bool pressed) {
         bool sent = false;
         std::list<UIElement::Type> types;
 
-        bool escape = keycode == AKEYCODE_ESCAPE;
-        bool tab = keycode == AKEYCODE_TAB;
-        bool enter = keycode == AKEYCODE_ENTER || keycode == AKEYCODE_NUMPAD_ENTER;
-        bool up_down = keycode == AKEYCODE_DPAD_UP || keycode == AKEYCODE_DPAD_DOWN;
-        bool left_right = keycode == AKEYCODE_DPAD_LEFT || keycode == AKEYCODE_DPAD_RIGHT;
+        bool escape = keycode == GLFMKeyCodeEscape;
+        bool tab = keycode == GLFMKeyCodeTab;
+        bool enter = keycode == GLFMKeyCodeEnter || keycode == GLFMKeyCodeNumpadEnter;
+        bool up_down = keycode == GLFMKeyCodeArrowUp || keycode == GLFMKeyCodeArrowDown;
+        bool left_right = keycode == GLFMKeyCodeArrowLeft || keycode == GLFMKeyCodeArrowRight;
         bool arrows = up_down || left_right;
 
         auto statusbar = UI::get().get_element<UIStatusBar>();

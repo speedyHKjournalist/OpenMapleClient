@@ -16,11 +16,8 @@
 #include "Game.h"
 #include <iostream>
 
-//#include "Audio/Audio.h"
-//#include "Character/Char.h"
-//#include "Configuration.h"
+
 #include "Constants.h"
-//#include "Gameplay/Combat/DamageNumber.h"
 #include "Gameplay/Stage.h"
 #include "IO/UI.h"
 #include "IO/Window.h"
@@ -38,9 +35,7 @@ Game::Game() {
     ScreenResolution();
 }
 
-Error Game::init(android_app *pApp) {
-    Constants::Constants::get().set_viewheight(ANativeWindow_getHeight(pApp->window));
-    Constants::Constants::get().set_viewwidth(ANativeWindow_getWidth(pApp->window));
+Error Game::init(GLFMDisplay *pApp) {
     if (Error error = PacketProcessor::get().init(pApp)) {
         return error;
     }
@@ -49,6 +44,7 @@ Error Game::init(android_app *pApp) {
         return error;
     }
     std::cout << "NxFiles init success." << std::endl;
+
     if (Error error = Window::get().init(pApp)) {
         return error;
     }
@@ -61,12 +57,6 @@ Error Game::init(android_app *pApp) {
         return error;
     }
     std::cout << "Sound init success." << std::endl;
-
-    Char::init();
-    DamageNumber::init();
-    MapPortals::init();
-    Stage::get().init();
-    UI::get().init();
 
     return Error::NONE;
 }
@@ -99,11 +89,6 @@ void Game::game_loop() {
     const int64_t timestep = Constants::TIMESTEP * 1000;
     int64_t accumulator = timestep;
 
-    int64_t period = 0;
-    int32_t samples = 0;
-
-    bool show_fps = Configuration::get().get_show_fps();
-
     while (is_running()) {
         int64_t elapsed = Timer::get().stop();
 
@@ -115,25 +100,12 @@ void Game::game_loop() {
         // Draw the game. Interpolate to account for remaining time.
         float alpha = static_cast<float>(accumulator) / timestep;
         draw(alpha);
-        if (show_fps) {
-            if (samples < 100) {
-                period += elapsed;
-                samples++;
-            } else if (period) {
-                int64_t fps = (samples * 1000000) / period;
-
-                std::cout << "FPS: " << fps << std::endl;
-
-                period = 0;
-                samples = 0;
-            }
-        }
     }
 
     Sound::close();
 }
 
-void Game::start(android_app *pApp) {
+void Game::start(GLFMDisplay *pApp) {
     // Initialize and check for errors
     if (Error error = init(pApp)) {
         auto message = error.get_message();
@@ -153,8 +125,6 @@ void Game::start(android_app *pApp) {
                 start(pApp);
             }
         }
-    } else {
-        game_loop();
     }
 }
 }  // namespace ms

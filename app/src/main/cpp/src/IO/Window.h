@@ -17,13 +17,11 @@
 
 #include "../Error.h"
 #include "../Template/Singleton.h"
-#include "glfw/deps/glad/gl.h"
-#include <GLFW/glfw3.h>
+#include "glfm.h"
 #include <functional>
 #include <string>
 #include <unistd.h>
 #include <iostream>
-#include <android_native_app_glue.h>
 #include <unistd.h>
 #define GetCurrentDir getcwd
 
@@ -34,9 +32,9 @@ namespace ms {
 
         ~Window() override;
 
-        Error init(android_app *pApp);
+        Error init(GLFMDisplay *pApp);
 
-        Error init_window(android_app *pApp);
+        Error init_window();
 
         bool not_closed() const;
 
@@ -56,14 +54,25 @@ namespace ms {
 
         void toggle_fullscreen();
 
+        void move_cursor(double x, double y);
+
+        void set_ratio(double ratio_x, double ratio_y);
+
+        double get_ratio_x();
+
+        double get_ratio_y();
+
+        GLFMDisplay* get_display();
+
     private:
         void update_opc();
 
-        GLFWwindow *glwnd_;
-        GLFWwindow *context_;
+        GLFMDisplay *display;
         bool fullscreen_;
         float opacity_;
         float opc_step_;
+        double ratio_x;
+        double ratio_y;
         std::function<void()> fade_procedure_;
         int16_t width_;
         int16_t height_;

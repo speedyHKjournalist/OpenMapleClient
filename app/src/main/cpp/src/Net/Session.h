@@ -21,10 +21,11 @@
 #include "../MSClient.h"
 #include "Cryptography.h"
 #include "Forwarder.h"
-#include <android_native_app_glue.h>
 
 #ifdef USE_ASIO
 #include "SocketAsio.h"
+#include "glfm.h"
+
 #else
 #include "SocketWinsock.h"
 #endif
@@ -36,7 +37,7 @@ public:
     ~Session();
 
     // Connect using host and port from the configuration file
-    Error init(android_app *pApp);
+    Error init(GLFMDisplay *pApp);
     // Send a packet to the server
     void write(int8_t *bytes, size_t length);
     // Check for incoming packets and handle them
@@ -49,7 +50,7 @@ public:
     // Check if the connection is alive
     bool is_connected() const;
 
-    std::string readHostIP(android_app* pApp);
+    std::string readHostIP(GLFMDisplay* pApp);
 
 private:
     bool init(const char *host, const char *port);

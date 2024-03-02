@@ -4,5 +4,7 @@
 
 #include "src/MSClient.h"
 #include "Game.h"
-
-void keep_screen_always_on(android_app *app);
+namespace ms {
+    static GLint program_ = 0;
+    static ms::Game game;
+}

@@ -20,50 +20,82 @@
 #include "../Timer.h"
 #include "UI.h"
 #include "stb/stb_image.h"
+#include "GLES3/gl32.h"
+#include "gl.h"
+#include "Char.h"
+#include "MapPortals.h"
+#include "Singleton.h"
+#include "Stage.h"
 
 #include <utility>
 #include <android/log.h>
 
 namespace ms {
     Window::Window() :
-            glwnd_(nullptr),
-            context_(nullptr),
+            display(nullptr),
             fullscreen_(true),
             opacity_(1.0f),
             opc_step_(0.0f),
+            ratio_x(0.0f),
+            ratio_y(0.0f),
             width_(Constants::Constants::get().get_viewwidth()),
             height_(Constants::Constants::get().get_viewheight()) {
     }
 
     Window::~Window() {
-        glfwTerminate();
+        display = nullptr;
+//        glfmTerminate();
     }
 
     void error_callback(int no, const char *description) {
         std::cout << "GLFW error [" << no << "]: " << description << std::endl;
     }
 
-    void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, int32_t metastate) {
-    // Found that in glfw-android GLFW_PRESS and GLFW_RELEASE are reversed
-        UI::get().send_key(scancode, action != GLFW_PRESS);
-        bool shiftPressed = (metastate == AMETA_SHIFT_ON || metastate == AMETA_CAPS_LOCK_ON);
-        int ascii = UI::get().get_keyboard().Key2Character(scancode, shiftPressed);
-        bool specialCharacter = UI::get().get_keyboard().IsSpecialCharacter();
-        if(action == GLFW_PRESS && !specialCharacter) {
-            // char_callback does not work, so handle the keycode manually in key_callback
-            UI::get().send_key(ascii);
+    bool key_callback(GLFMDisplay *display, GLFMKeyCode keyCode, GLFMKeyAction action,
+                      int modifiers) {
+        std::cout << "key_callback" << keyCode << " action " << action << std::endl;
+        UI::get().send_key(keyCode, action != GLFMKeyActionReleased);
+        return true;
+    }
+
+    void char_callback(GLFMDisplay *display, const char *string, int modifiers) {
+        std::cout << "char_callback" << string << std::endl;
+        // Determine the length of the wide string (Unicode) to allocate memory
+        size_t length = mbstowcs(nullptr, string, 0);
+        if (length == (size_t)-1) {
+            // Error handling for invalid input string
+            return;
         }
+
+        // Allocate memory for the wide string
+        wchar_t* wide_string = new wchar_t[length + 1]; // +1 for null terminator
+
+        // Convert the input string to wide string (Unicode)
+        mbstowcs(wide_string, string, length);
+        wide_string[length] = L'\0'; // Null-terminate the wide string
+
+        // Convert each wide character to uint32_t and use it as needed
+        for (size_t i = 0; i < length; ++i) {
+            uint32_t unicode_value = static_cast<uint32_t>(wide_string[i]);
+            // Now you have the uint32_t representation of the Unicode character
+            // You can use it as needed
+            UI::get().send_key(unicode_value);
+        }
+        delete[] wide_string;
     }
 
     std::chrono::time_point<std::chrono::steady_clock> start =
             ContinuousTimer::get().start();
 
-    void mousekey_callback(GLFWwindow *, int button, int action, int) {
-        switch (button) {
-            case GLFW_MOUSE_BUTTON_LEFT:
-                switch (action) {
-                    case GLFW_PRESS: UI::get().send_cursor(true); break;
-                    case GLFW_RELEASE: {
+    bool mousekey_callback(GLFMDisplay *display, int touch, GLFMTouchPhase phase,
+                           double x, double y) {
+        switch (touch) {
+            case 0:
+                switch (phase) {
+                    case GLFMTouchPhaseBegan:
+                        UI::get().send_cursor(true);
+                        break;
+                    case GLFMTouchPhaseEnded: {
                         auto diff_ms = ContinuousTimer::get().stop(start) / 1000;
                         start = ContinuousTimer::get().start();
 
@@ -72,104 +104,104 @@ namespace ms {
                         }
 
                         UI::get().send_cursor(false);
-                    } break;
+                    }
+                        break;
                 }
 
                 break;
-            case GLFW_MOUSE_BUTTON_RIGHT:
-                switch (action) {
-                    case GLFW_PRESS: UI::get().rightclick(); break;
+            case 1:
+                switch (phase) {
+                    case GLFMTouchPhaseBegan:
+                        UI::get().rightclick();
+                        break;
                 }
 
                 break;
         }
+        Window::get().move_cursor(x / Window::get().get_ratio_x(), y / Window::get().get_ratio_y());
+        return true;
     }
 
-    void cursor_callback(GLFWwindow *, double xpos, double ypos) {
-        double ratio_y = 600.0 / Constants::Constants::get().get_viewheight();
-        auto x = static_cast<int16_t>(xpos * ratio_y);
-        auto y = static_cast<int16_t>(ypos * ratio_y) ;
-        Point<int16_t> pos = Point<int16_t>(x, y);
+    void Window::move_cursor(double x, double y) {
+        auto xpos = static_cast<int16_t>(x);
+        auto ypos = static_cast<int16_t>(y);
+        Point<int16_t> pos = Point<int16_t>(xpos, ypos);
         UI::get().send_cursor(pos);
     }
 
-    void focus_callback(GLFWwindow *, int focused) {
+    void focus_callback(GLFMDisplay *display, bool focused) {
         UI::get().send_focus(focused);
     }
 
-    void scroll_callback(GLFWwindow *, double xoffset, double yoffset) {
+    void scroll_callback(GLFMDisplay *display, double xoffset, double yoffset) {
         UI::get().send_scroll(yoffset);
     }
 
-    void close_callback(GLFWwindow *window) {
+    void close_callback(GLFMDisplay *display) {
         UI::get().send_close();
-
-        glfwSetWindowShouldClose(window, GL_FALSE);
     }
 
-    Error Window::init(android_app *pApp) {
-        glfwSetErrorCallback(error_callback);
-        if (!glfwInit()) {
-            return Error::Code::GLFW;
+    void onDraw(GLFMDisplay *display) {
+        if (ms::program_ == 0) {
+            program_ = glCreateProgram();
+            GraphicsGL::get().init(display);
+            GraphicsGL::get().reinit();
+            Char::init();
+            DamageNumber::init();
+            MapPortals::init();
+            Stage::get().init();
+            UI::get().init();
+            Timer::get().start();
+
+            int width, height;
+            glfmGetDisplaySize(display, &width, &height);
+            Window::get().set_ratio(width/ 800.0, height / 600.0);
         }
+        const int64_t timestep = Constants::TIMESTEP * 1000;
+        int64_t accumulator = timestep;
+        if (game.is_running()) {
+            int64_t elapsed = Timer::get().stop();
 
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-        glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-
-        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-        glwnd_ = glfwCreateWindow(Constants::Constants::get().get_viewwidth(),
-                                  Constants::Constants::get().get_viewheight(),
-                                  Configuration::get().get_title().c_str(),
-                                  nullptr,
-                                  nullptr);
-        glfwMakeContextCurrent(glwnd_);
-
-        glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
-        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-        if (Error error = GraphicsGL::get().init(pApp)) {
-            return error;
+            // Update game with constant timestep as many times as possible.
+            for (accumulator += elapsed; accumulator >= timestep;
+                 accumulator -= timestep) {
+                game.update();
+            }
+            float alpha = static_cast<float>(accumulator) / timestep;
+            game.draw(alpha);
         }
-
-        return init_window(pApp);
     }
 
-    Error Window::init_window(android_app *pApp) {
-        if (!glwnd_) {
-            return Error::Code::WINDOW;
-        }
+    Error Window::init(GLFMDisplay *pApp) {
+        display = pApp;
+                glfmSetDisplayConfig(display,
+                             GLFMRenderingAPIOpenGLES32,
+                             GLFMColorFormatRGBA8888,
+                             GLFMDepthFormatNone,
+                             GLFMStencilFormatNone,
+                             GLFMMultisampleNone);
+        return init_window();
+    }
 
-        bool vsync = Setting<VSync>::get().load();
-        glfwSwapInterval(vsync ? 1 : 0);
-        glViewport(0, 0, Constants::Constants::get().get_viewwidth(), Constants::Constants::get().get_viewheight());
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
+    Error Window::init_window() {
+        glViewport(0, 0, width_, height_);
 
-        glfwSetInputMode(glwnd_, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-        double xpos = 0;
-        double ypos = 0;
-
-        glfwGetCursorPos(glwnd_, &xpos, &ypos);
-        cursor_callback(glwnd_, xpos, ypos);
-
-        glfwSetInputMode(glwnd_, GLFW_STICKY_KEYS, GL_TRUE);
-        glfwSetKeyCallback(glwnd_, key_callback);
-        glfwSetMouseButtonCallback(glwnd_, mousekey_callback);
-        glfwSetCursorPosCallback(glwnd_, cursor_callback);
-        glfwSetWindowFocusCallback(glwnd_, focus_callback);
-        glfwSetScrollCallback(glwnd_, scroll_callback);
-        glfwSetWindowCloseCallback(glwnd_, close_callback);
-
-        GraphicsGL::get().reinit();
+        glfmSetMouseCursor(display, GLFMMouseCursorDefault);
+        glfmSetKeyFunc(display, key_callback);
+        glfmSetCharFunc(display, char_callback);
+        glfmSetRenderFunc(display, onDraw);
+        glfmSetTouchFunc(display, mousekey_callback);
+//        glfmSetMouseWheelFunc(display, cursor_callback);
+        glfmSetAppFocusFunc(display, focus_callback);
+//        glfwSetScrollCallback(pApp, scroll_callback);
+        glfmSetSurfaceDestroyedFunc(display, close_callback);
 
         return Error::Code::NONE;
     }
 
     bool Window::not_closed() const {
-        return glfwWindowShouldClose(glwnd_) == 0;
+//        return glfwWindowShouldClose(glwnd_) == 0;
+        return true;
     }
 
     void Window::update() {
@@ -209,7 +241,7 @@ namespace ms {
 //            init_window();
         }
 
-        glfwPollEvents();
+//        glfwPollEvents();
     }
 
     void Window::begin() const {
@@ -218,7 +250,7 @@ namespace ms {
 
     void Window::end() const {
         GraphicsGL::get().flush(opacity_);
-        glfwSwapBuffers(glwnd_);
+        glfmSwapBuffers(display);
     }
 
     void Window::fadeout(float step, std::function<void()> fadeproc) {
@@ -227,13 +259,14 @@ namespace ms {
     }
 
     void Window::set_clipboard(const std::string &text) const {
-        glfwSetClipboardString(glwnd_, text.c_str());
+//        glfwSetClipboardString(glwnd_, text.c_str());
     }
 
     std::string Window::get_clipboard() const {
-        const char *text = glfwGetClipboardString(glwnd_);
+//        const char *text = glfwGetClipboardString(glwnd_);
 
-        return text != nullptr ? text : "";
+//        return text != nullptr ? text : "";
+        return "";
     }
 
     void Window::toggle_fullscreen() {
@@ -245,7 +278,24 @@ namespace ms {
             Setting<Fullscreen>::get().save(fullscreen_);
 
 //            init_window();
-            glfwPollEvents();
+//            glfwPollEvents();
         }
+    }
+
+    double Window::get_ratio_x() {
+        return ratio_x;
+    }
+
+    double Window::get_ratio_y() {
+        return ratio_y;
+    }
+
+    void Window::set_ratio(double ratio_x, double ratio_y) {
+        this->ratio_x = ratio_x;
+        this->ratio_y = ratio_y;
+    }
+
+    GLFMDisplay* Window::get_display() {
+        return display;
     }
 }  // namespace ms

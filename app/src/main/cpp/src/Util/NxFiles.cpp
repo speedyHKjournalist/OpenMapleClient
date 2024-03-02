@@ -20,7 +20,7 @@
 #include <nlnx/nx.hpp>
 
 namespace ms::NxFiles {
-Error init(android_app *pApp) {
+Error init(GLFMDisplay *pApp) {
     try {
         nl::nx::load_all(pApp);
     } catch (const std::exception &ex) {
