@@ -3,20 +3,12 @@ add_compile_definitions(NDK_DEBUG=1)
 
 add_subdirectory(thirdparty)
 include(thirdparty/Deps.cmake)
-#include_directories(thirdparty/glfw/include
-#        thirdparty/glfw/deps
-#        ${ANDROID_NDK}/sources/android/native_app_glue/)
-# build native_app_glue as a static lib
+
 set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 # now build app's shared lib
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-error=deprecated-declarations")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# Export ANativeActivity_onCreate(),
-# Refer to: https://github.com/android-ndk/ndk/issues/381.
-set(CMAKE_SHARED_LINKER_FLAGS
-    "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
 add_library(glfw-example SHARED
         gl.cpp

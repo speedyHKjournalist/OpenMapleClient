@@ -58,3 +58,5 @@ freeline_project_description.json
 
 app/.cxx/*
 *.DS_Store
+app/src/main/cpp/thirdparty/src/glfm-populate-stamp
+app/src/main/cpp/thirdparty/src/tmp
