@@ -17,8 +17,6 @@
             android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape">
-            <meta-data android:name="android.app.lib_name"
-                android:value="OpenMapleClient" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
