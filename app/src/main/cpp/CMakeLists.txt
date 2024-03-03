@@ -10,7 +10,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-error=deprecated-declarations
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(glfw-example SHARED
+add_library(OpenMapleClient SHARED
         gl.cpp
         src/Game.cpp
         src/Configuration.cpp
@@ -211,7 +211,7 @@ add_library(glfw-example SHARED
         ${CMAKE_SOURCE_DIR}/thirdparty/stb/deprecated/stb_image.c
         )
 
-target_include_directories(glfw-example
+target_include_directories(OpenMapleClient
         PRIVATE
         .
         src
@@ -243,4 +243,4 @@ target_include_directories(glfw-example
         ${CMAKE_SOURCE_DIR}/thirdparty/glfm/include
         )
 # add lib dependencies
-target_link_libraries(glfw-example glfm android log GLESv3 freetype NoLifeNx ${CMAKE_SOURCE_DIR}/thirdparty/bass/libs/arm64-v8a/libbass.so)
+target_link_libraries(OpenMapleClient glfm android log GLESv3 freetype NoLifeNx ${CMAKE_SOURCE_DIR}/thirdparty/bass/libs/arm64-v8a/libbass.so)

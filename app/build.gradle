@@ -1,9 +1,10 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
     compileSdk 31
     defaultConfig {
-        applicationId "io.github.xcuri0.glfwexample"
+        applicationId "com.OpenMapleClient"
         minSdkVersion 31
         targetSdkVersion 31
         versionCode 1
@@ -16,6 +17,13 @@ android {
         }
         ndk {
             abiFilters.add("arm64-v8a")
+        }
+        kotlinOptions {
+            jvmTarget = "17"
+        }
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_17
+            targetCompatibility JavaVersion.VERSION_17
         }
     }
     buildTypes {
@@ -36,11 +44,12 @@ android {
         }
     }
     ndkVersion '26.1.10909125'
-    namespace 'io.github.xcuri0.glfwexample'
+    namespace 'OpenMapleClient'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.core:core-ktx:1.7.0'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
