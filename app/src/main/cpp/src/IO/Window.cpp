@@ -89,10 +89,15 @@ namespace ms {
 
     bool mousekey_callback(GLFMDisplay *display, int touch, GLFMTouchPhase phase,
                            double x, double y) {
+        Window::get().move_cursor(x, y);
         switch (touch) {
             case 0:
                 switch (phase) {
                     case GLFMTouchPhaseBegan:
+                        UI::get().send_cursor(true);
+                        UI::get().convert_touch_to_action(x, y);
+                        break;
+                    case GLFMTouchPhaseMoved:
                         UI::get().send_cursor(true);
                         break;
                     case GLFMTouchPhaseEnded: {
@@ -104,27 +109,17 @@ namespace ms {
                         }
 
                         UI::get().send_cursor(false);
+                        break;
                     }
-                        break;
                 }
-
-                break;
-            case 1:
-                switch (phase) {
-                    case GLFMTouchPhaseBegan:
-                        UI::get().rightclick();
-                        break;
-                }
-
                 break;
         }
-        Window::get().move_cursor(x / Window::get().get_ratio_x(), y / Window::get().get_ratio_y());
         return true;
     }
 
     void Window::move_cursor(double x, double y) {
-        auto xpos = static_cast<int16_t>(x);
-        auto ypos = static_cast<int16_t>(y);
+        auto xpos = static_cast<int16_t>(x / Window::get().get_ratio_x());
+        auto ypos = static_cast<int16_t>(y / Window::get().get_ratio_y());
         Point<int16_t> pos = Point<int16_t>(xpos, ypos);
         UI::get().send_cursor(pos);
     }
@@ -155,7 +150,7 @@ namespace ms {
 
             int width, height;
             glfmGetDisplaySize(display, &width, &height);
-            Window::get().set_ratio(width/ 800.0, height / 600.0);
+            Window::get().set_ratio(width / 1366.0, height / 768.0);
         }
         const int64_t timestep = Constants::TIMESTEP * 1000;
         int64_t accumulator = timestep;

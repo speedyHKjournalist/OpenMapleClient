@@ -77,6 +77,7 @@ add_library(OpenMapleClient SHARED
         src/IO/Components/StatefulIcon.cpp
         src/IO/Components/Textfield.cpp
         src/IO/Components/TextTooltip.cpp
+        src/IO/Components/TouchButton.cpp
         src/IO/Components/TwoSpriteButton.cpp
         src/Game.cpp
         src/IO/Cursor.cpp
@@ -100,6 +101,7 @@ add_library(OpenMapleClient SHARED
         src/IO/UITypes/UIJoypad.cpp
         src/IO/UITypes/UIKeyConfig.cpp
         src/IO/UITypes/UIMiniMap.cpp
+        src/IO/UITypes/UIMobileInput.cpp
         src/IO/UITypes/UINotice.cpp
         src/IO/UITypes/UINotification.cpp
         src/IO/UITypes/UINpcTalk.cpp

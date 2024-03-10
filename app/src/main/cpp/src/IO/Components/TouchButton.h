@@ -14,33 +14,36 @@
 //	You should have received a copy of the GNU Affero General Public License
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #pragma once
+#include "IconCover.h"
+#include "Button.h"
+#include "glfm.h"
 
-#include <cstdint>
-
-#include "Template/Singleton.h"
-
-namespace ms::Constants {
-// Timestep, e.g. the granularity in which the game advances.
-constexpr uint16_t TIMESTEP = 8;
-
-class Constants : public Singleton<Constants> {
+namespace ms {
+class TouchButton {
 public:
-    Constants() : VIEWWIDTH(1366), VIEWHEIGHT(768) {}
+    enum ActionType : uint16_t {
+        Jump,
+        Skill,
+        Potion,
+        Default
+    };
 
-    ~Constants() override = default;
+    TouchButton(Point<int16_t> position, ActionType action_type, const std::string &text);
 
-    int16_t get_viewwidth() { return VIEWWIDTH; }
+    TouchButton(Point<int16_t> position, ActionType action_type, GLFMKeyCode bind_key, const std::string &text);
 
-    void set_viewwidth(int16_t width) { VIEWWIDTH = width; }
+    void draw() const;
 
-    int16_t get_viewheight() { return VIEWHEIGHT; }
+    void update();
 
-    void set_viewheight(int16_t height) { VIEWHEIGHT = height; }
+    void set_state(Point<double_t> cursor_pos);
 
 private:
-    // Window and screen width.
-    int16_t VIEWWIDTH;
-    // Window and screen height.
-    int16_t VIEWHEIGHT;
+    Point<int16_t> position_;
+    ColorBox background_;
+    GLFMKeyCode bind_key_;
+    ActionType action_type_;
+    bool cursor_in_range_;
+    Text text_;
 };
-}  // namespace ms::Constants
+}  // namespace ms

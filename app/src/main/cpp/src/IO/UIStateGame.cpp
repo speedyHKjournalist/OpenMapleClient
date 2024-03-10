@@ -40,6 +40,7 @@
 #include "UITypes/UIStatusMessenger.h"
 #include "UITypes/UIUserList.h"
 #include "UITypes/UIWorldMap.h"
+#include "UIMobileInput.h"
 
 namespace ms {
 namespace {

@@ -27,6 +27,7 @@
 #include "Singleton.h"
 #include "../Template/OptionalCreator.h"
 #include "UIState.h"
+#include "UIMobileInput.h"
 
 namespace ms {
 class UI : public Singleton<UI> {
@@ -101,6 +102,8 @@ public:
                   int32_t mapid,
                   bool bolded);
 
+    void convert_touch_to_action(double x, double y);
+
     Keyboard &get_keyboard();
 
     int64_t get_uptime();
@@ -122,6 +125,7 @@ private:
     Keyboard keyboard_;
     Cursor cursor_;
     ScrollingNotice scrolling_notice_;
+    UIMobileInput mobile_input_;
 
     std::optional<std::reference_wrapper<Textfield>> focused_text_field_;
     std::unordered_map<int32_t, bool> is_key_down_;

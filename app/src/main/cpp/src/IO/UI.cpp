@@ -43,7 +43,8 @@ UI::UI() :
     state_(std::make_unique<UIStateNull>()),
     enabled_(true),
     quitted_(false),
-    caps_lock_enabled_(false) {}
+    caps_lock_enabled_(false) {
+}
 
 void UI::init() {
     cursor_.init();
@@ -54,12 +55,14 @@ void UI::draw(float alpha) const {
     state_->draw(alpha, cursor_.get_position());
     scrolling_notice_.draw(alpha);
     cursor_.draw(alpha);
+    mobile_input_.draw();
 }
 
 void UI::update() {
     state_->update();
     scrolling_notice_.update();
     cursor_.update();
+    mobile_input_.update();
 }
 
 void UI::enable() {
@@ -434,6 +437,17 @@ void UI::show_map(Tooltip::Parent parent,
                      std::move(description),
                      mapid,
                      bolded);
+}
+
+void UI::convert_touch_to_action(double x, double y) {
+    //if cursor is in button range
+    //send corresponded keycode
+    Point<double_t> relative_pos = Point<double_t>(x / Window::get().get_ratio_x(), y / Window::get().get_ratio_y());
+    for (const auto &iter : mobile_input_.getTouchButtons()) {
+        if (TouchButton *button = iter.second.get()) {
+            button->set_state(relative_pos);
+        }
+    }
 }
 
 Keyboard &UI::get_keyboard() {

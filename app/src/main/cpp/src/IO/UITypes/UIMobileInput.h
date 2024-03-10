@@ -15,32 +15,32 @@
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #pragma once
 
-#include <cstdint>
+#include <unordered_map>
+#include "TouchButton.h"
 
-#include "Template/Singleton.h"
-
-namespace ms::Constants {
-// Timestep, e.g. the granularity in which the game advances.
-constexpr uint16_t TIMESTEP = 8;
-
-class Constants : public Singleton<Constants> {
+namespace ms {
+class UIMobileInput {
 public:
-    Constants() : VIEWWIDTH(1366), VIEWHEIGHT(768) {}
+    enum MobileButtons : uint16_t {
+        ButtonJump,
+        ButtonNormal0,
+        ButtonNormal1,
+        ButtonNormal2,
+        ButtonNormal3,
+        ButtonNormal4,
+        ButtonNormal5,
+        ButtonNormal6
+    };
 
-    ~Constants() override = default;
+    UIMobileInput();
 
-    int16_t get_viewwidth() { return VIEWWIDTH; }
+    void draw() const;
 
-    void set_viewwidth(int16_t width) { VIEWWIDTH = width; }
+    void update();
 
-    int16_t get_viewheight() { return VIEWHEIGHT; }
-
-    void set_viewheight(int16_t height) { VIEWHEIGHT = height; }
+    std::map<uint16_t, std::unique_ptr<TouchButton>>& getTouchButtons();
 
 private:
-    // Window and screen width.
-    int16_t VIEWWIDTH;
-    // Window and screen height.
-    int16_t VIEWHEIGHT;
+    std::map<uint16_t, std::unique_ptr<TouchButton>> touch_buttons_;
 };
-}  // namespace ms::Constants
+}  // namespace ms
