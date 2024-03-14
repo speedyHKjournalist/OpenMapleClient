@@ -102,7 +102,7 @@ public:
                   int32_t mapid,
                   bool bolded);
 
-    void convert_touch_to_action(double x, double y);
+    bool convert_touch_to_action(double x, double y);
 
     Keyboard &get_keyboard();
 
@@ -120,8 +120,13 @@ public:
 
     void remove(UIElement::Type type);
 
+    void set_touch_phase(GLFMTouchPhase touchPhase);
+
+    GLFMTouchPhase get_touch_phase();
+
 private:
     std::unique_ptr<UIState> state_;
+    GLFMTouchPhase touch_phase_;
     Keyboard keyboard_;
     Cursor cursor_;
     ScrollingNotice scrolling_notice_;

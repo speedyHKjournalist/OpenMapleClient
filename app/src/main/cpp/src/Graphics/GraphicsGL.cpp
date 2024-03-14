@@ -1,5 +1,5 @@
 //	This file is part of the continued Journey MMORPG client
-//	Copyright (C) 2015-2019  Daniel Allendorf, Ryan Payton
+//	Copyright (C) 2015-2024  Daniel Allendorf, Ryan Payton, Bizhou Xing
 //
 //	This program is free software: you can redistribute it and/or modify
 //	it under the terms of the GNU Affero General Public License as published by
@@ -201,7 +201,8 @@ namespace ms {
 
         const char *FONT_NORMAL_STR = FONT_NORMAL.c_str();
         const char *FONT_BOLD_STR = FONT_BOLD.c_str();
-        AAssetManager* assetManager = ((ANativeActivity*)glfmGetAndroidActivity(pApp))->assetManager;
+        AAssetManager *assetManager = ((ANativeActivity *) glfmGetAndroidActivity(
+                pApp))->assetManager;
 
         add_font(assetManager, FONT_NORMAL_STR, Text::Font::A11M, 0, 11);
         add_font(assetManager, FONT_BOLD_STR, Text::Font::A11B, 0, 11);
@@ -240,14 +241,15 @@ namespace ms {
                               FT_UInt pixelw,
                               FT_UInt pixelh) {
         FT_Face face;
-        AAsset* fontFile = AAssetManager_open(assetManager, name, AASSET_MODE_BUFFER);
+        AAsset *fontFile = AAssetManager_open(assetManager, name, AASSET_MODE_BUFFER);
         off_t fontDataSize = AAsset_getLength(fontFile);
 
-        FT_Byte* fontData = new FT_Byte[fontDataSize];
+        FT_Byte *fontData = new FT_Byte[fontDataSize];
         AAsset_read(fontFile, fontData, (size_t) fontDataSize);
         AAsset_close(fontFile);
 
-        if (FT_New_Memory_Face(ft_library_, (const FT_Byte*)fontData, (FT_Long)fontDataSize, 0, &face)) {
+        if (FT_New_Memory_Face(ft_library_, (const FT_Byte *) fontData, (FT_Long) fontDataSize, 0,
+                               &face)) {
             std::cerr << "Error: Failed to create new face." << std::endl;
             return false;
         }
@@ -314,7 +316,7 @@ namespace ms {
             FT_Render_Glyph(g, FT_RENDER_MODE_NORMAL);
 
             // Convert grayscale to BGRA
-            FT_Byte* bgraBuffer = new FT_Byte[g->bitmap.rows * g->bitmap.width * 4];
+            FT_Byte *bgraBuffer = new FT_Byte[g->bitmap.rows * g->bitmap.width * 4];
             for (int i = 0; i < g->bitmap.rows * g->bitmap.width; ++i) {
                 // Grayscale value
                 auto intensity = g->bitmap.buffer[i];
@@ -345,7 +347,7 @@ namespace ms {
             delete[] bgraBuffer;
 
             Offset offset = Offset(ox, oy, w, h);
-            fonts_[id].chars[c] = { ax, ay, w, h, l, t, offset };
+            fonts_[id].chars[c] = {ax, ay, w, h, l, t, offset};
 
             ox += w;
         }
@@ -381,7 +383,7 @@ namespace ms {
                               GL_FLOAT,
                               GL_FALSE,
                               sizeof(Quad::Vertex),
-                              (const void *)offsetof(Quad::Vertex, color));
+                              (const void *) offsetof(Quad::Vertex, color));
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -632,7 +634,7 @@ namespace ms {
         size_t first = 0;
         size_t offset = 0;
 
-        std::vector<uint32_t> to_find = { ' ', '\\', '#' };
+        std::vector<uint32_t> to_find = {' ', '\\', '#'};
 
         while (offset < length) {
             auto it = std::find_first_of(text_as_values.begin() + offset + 1,
@@ -670,8 +672,12 @@ namespace ms {
                 case '\\':
                     if (first + 1 < last) {
                         switch (text[first + 1]) {
-                            case 'n': linebreak = true; break;
-                            case 'r': linebreak = ax_ > 0; break;
+                            case 'n':
+                                linebreak = true;
+                                break;
+                            case 'r':
+                                linebreak = ax_ > 0;
+                                break;
                         }
 
                         skip++;
@@ -682,10 +688,18 @@ namespace ms {
                 case '#':
                     if (first + 1 < last) {
                         switch (text[first + 1]) {
-                            case 'k': color_ = Color::Name::DARKGREY; break;
-                            case 'b': color_ = Color::Name::BLUE; break;
-                            case 'r': color_ = Color::Name::RED; break;
-                            case 'c': color_ = Color::Name::ORANGE; break;
+                            case 'k':
+                                color_ = Color::Name::DARKGREY;
+                                break;
+                            case 'b':
+                                color_ = Color::Name::BLUE;
+                                break;
+                            case 'r':
+                                color_ = Color::Name::RED;
+                                break;
+                            case 'c':
+                                color_ = Color::Name::ORANGE;
+                                break;
                         }
 
                         skip++;
@@ -911,7 +925,7 @@ namespace ms {
                                              size_t word_last,
                                              Text::Font word_font,
                                              Color::Name word_color) {
-        words_.push_back({ word_first, word_last, word_font, word_color });
+        words_.push_back({word_first, word_last, word_font, word_color});
     }
 
     void GraphicsGL::LayoutBuilder::add_line() {
@@ -919,11 +933,15 @@ namespace ms {
         int16_t line_y = ay_;
 
         switch (alignment_) {
-            case Text::Alignment::CENTER: line_x -= ax_ / 2; break;
-            case Text::Alignment::RIGHT: line_x -= ax_; break;
+            case Text::Alignment::CENTER:
+                line_x -= ax_ / 2;
+                break;
+            case Text::Alignment::RIGHT:
+                line_x -= ax_;
+                break;
         }
 
-        lines_.push_back({ words_, { line_x, line_y } });
+        lines_.push_back({words_, {line_x, line_y}});
         words_.clear();
     }
 
@@ -1090,7 +1108,7 @@ namespace ms {
         switch (background) {
             case Text::Background::NAMETAG:
                 // If ever changing code in here confirm placements with map 10000
-                for (const Text::Layout::Line &line : layout) {
+                for (const Text::Layout::Line &line: layout) {
                     GLshort left = x + line.position.x() - 1;
                     GLshort right = left + w + 3;
                     GLshort top = y + line.position.y() - font.linespace() + 6;
@@ -1123,10 +1141,10 @@ namespace ms {
                 break;
         }
 
-        for (const Text::Layout::Line &line : layout) {
+        for (const Text::Layout::Line &line: layout) {
             Point<int16_t> position = line.position;
 
-            for (const Text::Layout::Word &word : line.words) {
+            for (const Text::Layout::Word &word: line.words) {
                 GLshort ax = position.x() + layout.advance(word.first);
                 GLshort ay = position.y();
 
@@ -1211,6 +1229,21 @@ namespace ms {
                             0.0f);
     }
 
+    void GraphicsGL::draw_circle(int16_t x,
+                                 int16_t y,
+                                 int16_t radius,
+                                 float red,
+                                 float green,
+                                 float blue,
+                                 float alpha) {
+        if (locked_) {
+            return;
+        }
+
+        circles_.emplace_back(x, y, radius,
+                              Color(red, green, blue, alpha));
+    }
+
     void GraphicsGL::draw_screen_fill(float red,
                                       float green,
                                       float blue,
@@ -1240,16 +1273,15 @@ namespace ms {
                                 null_offset_,
                                 color,
                                 0.0f);
+            circles_.emplace_back(1, 1, 1, color);
         }
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-//        GLsizeiptr csize = quads_.size() * sizeof(Quad);
-//        GLsizeiptr fsize = quads_.size() * Quad::LENGTH;
-
         std::vector<Quad::Vertex> triangles;
-        for (const Quad& quad : quads_) {
+        std::vector<Circle::Vertex> circles;
+        for (const Quad &quad: quads_) {
             triangles.push_back(quad.vertices[0]);
             triangles.push_back(quad.vertices[1]);
             triangles.push_back(quad.vertices[2]);
@@ -1259,12 +1291,24 @@ namespace ms {
             triangles.push_back(quad.vertices[3]);
         }
 
+        for (const Circle &circle: circles_) {
+            for (int i = 0; i < Circle::NUM_SEGMENTS; i++) {
+                circles.push_back(circle.vertices[i]);
+            }
+        }
+
         glEnableVertexAttribArray(attribute_coord_);
         glEnableVertexAttribArray(attribute_color_);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO_);
-        glBufferData(GL_ARRAY_BUFFER, triangles.size() * sizeof(Quad::Vertex), triangles.data(), GL_STREAM_DRAW);
 
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_);
+        glBufferData(GL_ARRAY_BUFFER, triangles.size() * sizeof(Quad::Vertex), triangles.data(),
+                     GL_STREAM_DRAW);
         glDrawArrays(GL_TRIANGLES, 0, triangles.size());
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_);
+        glBufferData(GL_ARRAY_BUFFER, circles.size() * sizeof(Circle::Vertex), circles.data(),
+                     GL_STREAM_DRAW);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, circles.size());
 
         glDisableVertexAttribArray(attribute_coord_);
         glDisableVertexAttribArray(attribute_color_);
@@ -1272,12 +1316,14 @@ namespace ms {
 
         if (coverscene) {
             quads_.pop_back();
+            circles_.pop_back();
         }
     }
 
     void GraphicsGL::clear_scene() {
         if (!locked_) {
             quads_.clear();
+            circles_.clear();
         }
     }
 }  // namespace ms

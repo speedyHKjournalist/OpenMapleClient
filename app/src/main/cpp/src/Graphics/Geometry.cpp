@@ -1,5 +1,5 @@
 //	This file is part of the continued Journey MMORPG client
-//	Copyright (C) 2015-2019  Daniel Allendorf, Ryan Payton
+//	Copyright (C) 2015-2024  Daniel Allendorf, Ryan Payton, Bizhou Xing
 //
 //	This program is free software: you can redistribute it and/or modify
 //	it under the terms of the GNU Affero General Public License as published by
@@ -16,131 +16,170 @@
 #include "Geometry.h"
 
 namespace ms {
-void Geometry::draw(int16_t x,
-                    int16_t y,
-                    int16_t w,
-                    int16_t h,
-                    Color::Name cid,
-                    float opacity) const {
-    if (w == 0 || h == 0 || opacity <= 0.0f) {
-        return;
+    void Geometry::draw(int16_t x,
+                        int16_t y,
+                        int16_t w,
+                        int16_t h,
+                        Color::Name cid,
+                        float opacity) const {
+        if (w == 0 || h == 0 || opacity <= 0.0f) {
+            return;
+        }
+
+        const float *color = Color::colors[cid];
+
+        GraphicsGL::get()
+                .draw_rectangle(x, y, w, h, color[0], color[1], color[2], opacity);
     }
 
-    const float *color = Color::colors[cid];
+    void Geometry::draw(int16_t x,
+                        int16_t y,
+                        int16_t radius,
+                        Color::Name cid,
+                        float opacity) const {
+        if (radius < 0 || opacity <= 0.0f) {
+            return;
+        }
 
-    GraphicsGL::get()
-        .draw_rectangle(x, y, w, h, color[0], color[1], color[2], opacity);
-}
-
-ColorBox::ColorBox(int16_t w, int16_t h, Color::Name c, float o) :
-    width_(w),
-    height_(h),
-    color_(c),
-    opacity_(o) {}
-
-ColorBox::ColorBox() : ColorBox(0, 0, Color::Name::BLACK, 0.0f) {}
-
-void ColorBox::set_width(int16_t w) {
-    width_ = w;
-}
-
-void ColorBox::set_height(int16_t h) {
-    height_ = h;
-}
-
-void ColorBox::set_color(Color::Name c) {
-    color_ = c;
-}
-
-void ColorBox::set_opacity(float o) {
-    opacity_ = o;
-}
-
-void ColorBox::draw(const DrawArgument &args) const {
-    Point<int16_t> absp = args.get_pos();
-    int16_t absw = args.get_stretch().x();
-
-    if (absw == 0) {
-        absw = width_;
+        const float *color = Color::colors[cid];
+        GraphicsGL::get()
+                .draw_circle(x, y, radius, color[0], color[1], color[2], opacity);
     }
 
-    int16_t absh = args.get_stretch().y();
+    ColorBox::ColorBox(int16_t w, int16_t h, Color::Name c, float o) :
+            width_(w),
+            height_(h),
+            color_(c),
+            opacity_(o) {}
 
-    if (absh == 0) {
-        absh = height_;
+    ColorBox::ColorBox() : ColorBox(0, 0, Color::Name::BLACK, 0.0f) {}
+
+    void ColorBox::set_width(int16_t w) {
+        width_ = w;
     }
 
-    absw = static_cast<int16_t>(absw * args.get_xscale());
-    absh = static_cast<int16_t>(absh * args.get_yscale());
-
-    float absopc = opacity_ * args.get_color().a();
-
-    Geometry::draw(absp.x(), absp.y(), absw, absh, color_, absopc);
-}
-
-ColorLine::ColorLine(int16_t w, Color::Name c, float o) :
-    width_(w),
-    color_(c),
-    opacity_(o) {}
-
-ColorLine::ColorLine() : ColorLine(0, Color::Name::BLACK, 0.0f) {}
-
-void ColorLine::set_width(int16_t w) {
-    width_ = w;
-}
-
-void ColorLine::set_color(Color::Name c) {
-    color_ = c;
-}
-
-void ColorLine::set_opacity(float o) {
-    opacity_ = o;
-}
-
-void ColorLine::draw(const DrawArgument &args) const {
-    Point<int16_t> absp = args.get_pos();
-    int16_t absw = args.get_stretch().x();
-
-    if (absw == 0) {
-        absw = width_;
+    void ColorBox::set_height(int16_t h) {
+        height_ = h;
     }
 
-    int16_t absh = args.get_stretch().y();
-
-    if (absh == 0) {
-        absh = 1;
+    void ColorBox::set_color(Color::Name c) {
+        color_ = c;
     }
 
-    absw = static_cast<int16_t>(absw * args.get_xscale());
-    absh = static_cast<int16_t>(absh * args.get_yscale());
+    void ColorBox::set_opacity(float o) {
+        opacity_ = o;
+    }
 
-    float absopc = opacity_ * args.get_color().a();
+    void ColorBox::draw(const DrawArgument &args) const {
+        Point<int16_t> absp = args.get_pos();
+        int16_t absw = args.get_stretch().x();
 
-    Geometry::draw(absp.x(), absp.y(), absw, absh, color_, absopc);
-}
+        if (absw == 0) {
+            absw = width_;
+        }
 
-void MobHpBar::draw(Point<int16_t> position, int16_t hppercent) const {
-    int16_t fillw =
-        static_cast<int16_t>((WIDTH - 6) * static_cast<float>(hppercent) / 100);
-    int16_t x = position.x() - WIDTH / 2;
-    int16_t y = position.y() - HEIGHT * 3;
+        int16_t absh = args.get_stretch().y();
 
-    Geometry::draw(x, y, WIDTH, HEIGHT, Color::Name::BLACK, 1.0f);
-    Geometry::draw(x + 1, y + 1, WIDTH - 2, 1, Color::Name::WHITE, 1.0f);
-    Geometry::draw(x + 1,
-                   y + HEIGHT - 2,
-                   WIDTH - 2,
-                   1,
-                   Color::Name::WHITE,
-                   1.0f);
-    Geometry::draw(x + 1, y + 2, 1, HEIGHT - 4, Color::Name::WHITE, 1.0f);
-    Geometry::draw(x + WIDTH - 2,
-                   y + 2,
-                   1,
-                   HEIGHT - 4,
-                   Color::Name::WHITE,
-                   1.0f);
-    Geometry::draw(x + 3, y + 3, fillw, 3, Color::Name::LIGHTGREEN, 1.0f);
-    Geometry::draw(x + 3, y + 6, fillw, 1, Color::Name::JAPANESELAUREL, 1.0f);
-}
+        if (absh == 0) {
+            absh = height_;
+        }
+
+        absw = static_cast<int16_t>(absw * args.get_xscale());
+        absh = static_cast<int16_t>(absh * args.get_yscale());
+
+        float absopc = opacity_ * args.get_color().a();
+
+        Geometry::draw(absp.x(), absp.y(), absw, absh, color_, absopc);
+    }
+
+    ColorCircle::ColorCircle(int16_t x, int16_t y, int16_t radius, Color::Name color,
+                                  float opacity) {
+        position_ = Point<int16_t>(x, y);
+        radius_ = radius;
+        color_ = color;
+        opacity_ = opacity;
+    }
+
+    void ColorCircle::set_center(Point<int16_t> position) {
+        position_ = position;
+    }
+
+    void ColorCircle::set_color(Color::Name color) {
+        color_ = color;
+    }
+
+    void ColorCircle::set_opacity(float opacity) {
+        opacity_ = opacity;
+    }
+
+    void ColorCircle::draw(Point<int16_t> position) const {
+
+        Geometry::draw(position.x(), position.y(), radius_, color_, opacity_);
+    }
+
+    ColorLine::ColorLine(int16_t w, Color::Name c, float o) :
+            width_(w),
+            color_(c),
+            opacity_(o) {}
+
+    ColorLine::ColorLine() : ColorLine(0, Color::Name::BLACK, 0.0f) {}
+
+    void ColorLine::set_width(int16_t w) {
+        width_ = w;
+    }
+
+    void ColorLine::set_color(Color::Name c) {
+        color_ = c;
+    }
+
+    void ColorLine::set_opacity(float o) {
+        opacity_ = o;
+    }
+
+    void ColorLine::draw(const DrawArgument &args) const {
+        Point<int16_t> absp = args.get_pos();
+        int16_t absw = args.get_stretch().x();
+
+        if (absw == 0) {
+            absw = width_;
+        }
+
+        int16_t absh = args.get_stretch().y();
+
+        if (absh == 0) {
+            absh = 1;
+        }
+
+        absw = static_cast<int16_t>(absw * args.get_xscale());
+        absh = static_cast<int16_t>(absh * args.get_yscale());
+
+        float absopc = opacity_ * args.get_color().a();
+
+        Geometry::draw(absp.x(), absp.y(), absw, absh, color_, absopc);
+    }
+
+    void MobHpBar::draw(Point<int16_t> position, int16_t hppercent) const {
+        int16_t fillw =
+                static_cast<int16_t>((WIDTH - 6) * static_cast<float>(hppercent) / 100);
+        int16_t x = position.x() - WIDTH / 2;
+        int16_t y = position.y() - HEIGHT * 3;
+
+        Geometry::draw(x, y, WIDTH, HEIGHT, Color::Name::BLACK, 1.0f);
+        Geometry::draw(x + 1, y + 1, WIDTH - 2, 1, Color::Name::WHITE, 1.0f);
+        Geometry::draw(x + 1,
+                       y + HEIGHT - 2,
+                       WIDTH - 2,
+                       1,
+                       Color::Name::WHITE,
+                       1.0f);
+        Geometry::draw(x + 1, y + 2, 1, HEIGHT - 4, Color::Name::WHITE, 1.0f);
+        Geometry::draw(x + WIDTH - 2,
+                       y + 2,
+                       1,
+                       HEIGHT - 4,
+                       Color::Name::WHITE,
+                       1.0f);
+        Geometry::draw(x + 3, y + 3, fillw, 3, Color::Name::LIGHTGREEN, 1.0f);
+        Geometry::draw(x + 3, y + 6, fillw, 1, Color::Name::JAPANESELAUREL, 1.0f);
+    }
 }  // namespace ms

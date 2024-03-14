@@ -1,5 +1,5 @@
 //	This file is part of the continued Journey MMORPG client
-//	Copyright (C) 2015-2019  Daniel Allendorf, Ryan Payton
+//	Copyright (C) 2015-2024  Daniel Allendorf, Ryan Payton, Bizhou Xing
 //
 //	This program is free software: you can redistribute it and/or modify
 //	it under the terms of the GNU Affero General Public License as published by
@@ -19,68 +19,93 @@
 #include "GraphicsGL.h"
 
 namespace ms {
-class Geometry {
-public:
-    virtual ~Geometry() = default;
+    class Geometry {
+    public:
+        virtual ~Geometry() = default;
 
-protected:
-    void draw(int16_t x,
-              int16_t y,
-              int16_t w,
-              int16_t h,
-              Color::Name color,
-              float opacity) const;
-};
+    protected:
+        void draw(int16_t x,
+                  int16_t y,
+                  int16_t w,
+                  int16_t h,
+                  Color::Name color,
+                  float opacity) const;
 
-class ColorBox : public Geometry {
-public:
-    ColorBox(int16_t width, int16_t height, Color::Name color, float opacity);
+        void draw(int16_t x,
+                  int16_t y,
+                  int16_t radius,
+                  Color::Name cid,
+                  float opacity) const;
+    };
 
-    ColorBox();
+    class ColorBox : public Geometry {
+    public:
+        ColorBox(int16_t width, int16_t height, Color::Name color, float opacity);
 
-    void set_width(int16_t width);
+        ColorBox();
 
-    void set_height(int16_t height);
+        void set_width(int16_t width);
 
-    void set_color(Color::Name color);
+        void set_height(int16_t height);
 
-    void set_opacity(float opacity);
+        void set_color(Color::Name color);
 
-    void draw(const DrawArgument &args) const;
+        void set_opacity(float opacity);
 
-private:
-    int16_t width_;
-    int16_t height_;
-    Color::Name color_;
-    float opacity_;
-};
+        void draw(const DrawArgument &args) const;
 
-class ColorLine : public Geometry {
-public:
-    ColorLine(int16_t width, Color::Name color, float opacity);
+    private:
+        int16_t width_;
+        int16_t height_;
+        Color::Name color_;
+        float opacity_;
+    };
 
-    ColorLine();
+    class ColorCircle : public Geometry {
+    public:
+        ColorCircle(int16_t x, int16_t y, int16_t radius, Color::Name color, float opacity);
 
-    void set_width(int16_t width);
+        void set_center(Point<int16_t> position);
 
-    void set_color(Color::Name color);
+        void set_color(Color::Name color);
 
-    void set_opacity(float opacity);
+        void set_opacity(float opacity);
 
-    void draw(const DrawArgument &args) const;
+        void draw(Point<int16_t> position) const;
 
-private:
-    int16_t width_;
-    Color::Name color_;
-    float opacity_;
-};
+    private:
+        Point<int16_t> position_;
+        int16_t radius_;
+        Color::Name color_;
+        float opacity_;
+    };
 
-class MobHpBar : public Geometry {
-public:
-    void draw(Point<int16_t> position, int16_t hppercent) const;
+    class ColorLine : public Geometry {
+    public:
+        ColorLine(int16_t width, Color::Name color, float opacity);
 
-private:
-    static const int16_t WIDTH = 50;
-    static const int16_t HEIGHT = 10;
-};
+        ColorLine();
+
+        void set_width(int16_t width);
+
+        void set_color(Color::Name color);
+
+        void set_opacity(float opacity);
+
+        void draw(const DrawArgument &args) const;
+
+    private:
+        int16_t width_;
+        Color::Name color_;
+        float opacity_;
+    };
+
+    class MobHpBar : public Geometry {
+    public:
+        void draw(Point<int16_t> position, int16_t hppercent) const;
+
+    private:
+        static const int16_t WIDTH = 50;
+        static const int16_t HEIGHT = 10;
+    };
 }  // namespace ms

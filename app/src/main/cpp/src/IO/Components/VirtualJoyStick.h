@@ -15,21 +15,12 @@
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #pragma once
 #include "IconCover.h"
-#include "glfm.h"
+#include "Button.h"
 
 namespace ms {
-class TouchButton {
+class VirtualJoyStick {
 public:
-    enum ActionType : uint16_t {
-        Jump,
-        Skill,
-        Potion,
-        Default
-    };
-
-    TouchButton(Point<int16_t> position, ActionType action_type, const std::string &text);
-
-    TouchButton(Point<int16_t> position, ActionType action_type, GLFMKeyCode bind_key, const std::string &text);
+    VirtualJoyStick(Point<int16_t> position, int16_t radius);
 
     void draw() const;
 
@@ -39,10 +30,9 @@ public:
 
 private:
     Point<int16_t> position_;
-    ColorBox background_;
-    GLFMKeyCode bind_key_;
-    ActionType action_type_;
+    ColorCircle background_;
+    int16_t radius_;
     bool cursor_in_range_;
-    Text text_;
+    double angle_;
 };
 }  // namespace ms

@@ -79,6 +79,7 @@ add_library(OpenMapleClient SHARED
         src/IO/Components/TextTooltip.cpp
         src/IO/Components/TouchButton.cpp
         src/IO/Components/TwoSpriteButton.cpp
+        src/IO/Components/VirtualJoyStick.cpp
         src/Game.cpp
         src/IO/Cursor.cpp
         src/IO/Keyboard.cpp

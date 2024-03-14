@@ -1,5 +1,5 @@
 //	This file is part of the continued Journey MMORPG client
-//	Copyright (C) 2015-2019  Daniel Allendorf, Ryan Payton
+//	Copyright (C) 2015-2024  Daniel Allendorf, Ryan Payton, Bizhou Xing
 //
 //	This program is free software: you can redistribute it and/or modify
 //	it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
 
 #include <unordered_map>
 #include "TouchButton.h"
+#include "VirtualJoyStick.h"
 
 namespace ms {
 class UIMobileInput {
@@ -40,7 +41,10 @@ public:
 
     std::map<uint16_t, std::unique_ptr<TouchButton>>& getTouchButtons();
 
+    VirtualJoyStick& getVirtualJoyStick();
+
 private:
     std::map<uint16_t, std::unique_ptr<TouchButton>> touch_buttons_;
+    VirtualJoyStick joystick_;
 };
 }  // namespace ms

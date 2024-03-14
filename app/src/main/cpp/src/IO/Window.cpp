@@ -62,13 +62,13 @@ namespace ms {
         std::cout << "char_callback" << string << std::endl;
         // Determine the length of the wide string (Unicode) to allocate memory
         size_t length = mbstowcs(nullptr, string, 0);
-        if (length == (size_t)-1) {
+        if (length == (size_t) -1) {
             // Error handling for invalid input string
             return;
         }
 
         // Allocate memory for the wide string
-        wchar_t* wide_string = new wchar_t[length + 1]; // +1 for null terminator
+        wchar_t *wide_string = new wchar_t[length + 1]; // +1 for null terminator
 
         // Convert the input string to wide string (Unicode)
         mbstowcs(wide_string, string, length);
@@ -89,31 +89,33 @@ namespace ms {
 
     bool mousekey_callback(GLFMDisplay *display, int touch, GLFMTouchPhase phase,
                            double x, double y) {
-        Window::get().move_cursor(x, y);
-        switch (touch) {
-            case 0:
-                switch (phase) {
-                    case GLFMTouchPhaseBegan:
-                        UI::get().send_cursor(true);
-                        UI::get().convert_touch_to_action(x, y);
-                        break;
-                    case GLFMTouchPhaseMoved:
-                        UI::get().send_cursor(true);
-                        break;
-                    case GLFMTouchPhaseEnded: {
-                        auto diff_ms = ContinuousTimer::get().stop(start) / 1000;
-                        start = ContinuousTimer::get().start();
+        UI::get().set_touch_phase(phase);
+        if (!UI::get().convert_touch_to_action(x, y)) {
+            Window::get().move_cursor(x, y);
+        }
 
-                        if (diff_ms > 10 && diff_ms < 200) {
-                            UI::get().doubleclick();
-                        }
+        switch (phase) {
+            case GLFMTouchPhaseHover:
+                break;
+            case GLFMTouchPhaseBegan:
+            case GLFMTouchPhaseMoved:
+                UI::get().send_cursor(true);
+                break;
+            case GLFMTouchPhaseEnded: {
+                auto diff_ms = ContinuousTimer::get().stop(start) / 1000;
+                start = ContinuousTimer::get().start();
 
-                        UI::get().send_cursor(false);
-                        break;
-                    }
+                if (diff_ms > 10 && diff_ms < 200) {
+                    UI::get().doubleclick();
                 }
+
+                UI::get().send_cursor(false);
+                break;
+            }
+            case GLFMTouchPhaseCancelled:
                 break;
         }
+
         return true;
     }
 
@@ -169,7 +171,7 @@ namespace ms {
 
     Error Window::init(GLFMDisplay *pApp) {
         display = pApp;
-                glfmSetDisplayConfig(display,
+        glfmSetDisplayConfig(display,
                              GLFMRenderingAPIOpenGLES32,
                              GLFMColorFormatRGBA8888,
                              GLFMDepthFormatNone,
@@ -290,7 +292,7 @@ namespace ms {
         this->ratio_y = ratio_y;
     }
 
-    GLFMDisplay* Window::get_display() {
+    GLFMDisplay *Window::get_display() {
         return display;
     }
 }  // namespace ms

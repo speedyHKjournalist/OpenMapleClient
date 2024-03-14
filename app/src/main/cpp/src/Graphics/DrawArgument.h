@@ -134,6 +134,8 @@ public:
 
     constexpr Point<int16_t> get_pos() const { return pos_; }
 
+    constexpr int16_t get_radius() const { return radius_; }
+
     constexpr Point<int16_t> get_stretch() const { return stretch_; }
 
     constexpr float get_xscale() const { return xscale_; }
@@ -204,6 +206,7 @@ private:
     float xscale_;
     float yscale_;
     float angle_;
+    int16_t radius_;
     Color color_;
 };
 }  // namespace ms

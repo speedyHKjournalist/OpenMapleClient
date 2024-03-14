@@ -41,6 +41,7 @@
 namespace ms {
 UI::UI() :
     state_(std::make_unique<UIStateNull>()),
+    touch_phase_(GLFMTouchPhaseEnded),
     enabled_(true),
     quitted_(false),
     caps_lock_enabled_(false) {
@@ -439,15 +440,16 @@ void UI::show_map(Tooltip::Parent parent,
                      bolded);
 }
 
-void UI::convert_touch_to_action(double x, double y) {
-    //if cursor is in button range
-    //send corresponded keycode
+bool UI::convert_touch_to_action(double x, double y) {
+    bool send_cursor = false;
     Point<double_t> relative_pos = Point<double_t>(x / Window::get().get_ratio_x(), y / Window::get().get_ratio_y());
     for (const auto &iter : mobile_input_.getTouchButtons()) {
         if (TouchButton *button = iter.second.get()) {
-            button->set_state(relative_pos);
+            send_cursor = send_cursor || button->set_state(relative_pos);
         }
     }
+    send_cursor = send_cursor || mobile_input_.getVirtualJoyStick().set_state(relative_pos);
+    return send_cursor;
 }
 
 Keyboard &UI::get_keyboard() {
@@ -457,5 +459,13 @@ Keyboard &UI::get_keyboard() {
 void UI::remove(UIElement::Type type) {
     focused_text_field_ = {};
     state_->remove(type);
+}
+
+void UI::set_touch_phase(GLFMTouchPhase touchPhase) {
+    touch_phase_ = touchPhase;
+}
+
+GLFMTouchPhase UI::get_touch_phase() {
+    return touch_phase_;
 }
 }  // namespace ms

@@ -23,7 +23,8 @@
 #include "TouchButton.h"
 
 namespace ms {
-    UIMobileInput::UIMobileInput() {
+    UIMobileInput::UIMobileInput() :
+    joystick_(Point<int16_t>(250, 500), 120) {
         touch_buttons_[MobileButtons::ButtonJump] = std::make_unique<TouchButton>(Point<int16_t>(1050, 550),
                                                                           TouchButton::ActionType::Jump, "JUMP");
         touch_buttons_[MobileButtons::ButtonNormal0] = std::make_unique<TouchButton>(Point<int16_t>(1050, 400),
@@ -43,6 +44,7 @@ namespace ms {
     }
 
     void UIMobileInput::draw() const {
+        joystick_.draw();
         for (const auto &iter : touch_buttons_) {
             if (const TouchButton *button = iter.second.get()) {
                 button->draw();
@@ -51,6 +53,7 @@ namespace ms {
     }
 
     void UIMobileInput::update() {
+        joystick_.update();
         for (const auto &iter : touch_buttons_) {
             if (TouchButton *button = iter.second.get()) {
                 button->update();
@@ -60,5 +63,9 @@ namespace ms {
 
     std::map<uint16_t, std::unique_ptr<TouchButton>>& UIMobileInput::getTouchButtons() {
         return touch_buttons_;
+    }
+
+    VirtualJoyStick& UIMobileInput::getVirtualJoyStick() {
+        return joystick_;
     }
 }  // namespace ms
