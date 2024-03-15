@@ -129,6 +129,8 @@ namespace ms {
 
         const std::unordered_map<int16_t, TouchInfo> &get_touch_phase();
 
+        std::type_info const& get_state_type();
+
     private:
         std::unique_ptr<UIState> state_;
         std::unordered_map<int16_t, TouchInfo> touch_phase_;

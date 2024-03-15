@@ -444,21 +444,23 @@ namespace ms {
     }
 
     bool UI::should_send_cursor() {
-        VirtualJoyStick joyStick = mobile_input_.getVirtualJoyStick();
-        for (const auto& touch_phase : touch_phase_) {
-            if (joyStick.set_state(touch_phase.second))
-                return false;
-        }
-
-        for (const auto &iter: mobile_input_.getTouchButtons()) {
-            bool should_not_send = false;
-            for (const auto& touch_phase : touch_phase_) {
-                if (TouchButton *button = iter.second.get()) {
-                    should_not_send = should_not_send || button->set_state(touch_phase.second);
-                }
+        if (UI::get().get_state_type() == typeid(UIStateGame)) {
+            VirtualJoyStick joyStick = mobile_input_.getVirtualJoyStick();
+            for (const auto &touch_phase: touch_phase_) {
+                if (joyStick.set_state(touch_phase.second))
+                    return false;
             }
-            if (should_not_send)
-                return false;
+
+            for (const auto &iter: mobile_input_.getTouchButtons()) {
+                bool should_not_send = false;
+                for (const auto &touch_phase: touch_phase_) {
+                    if (TouchButton *button = iter.second.get()) {
+                        should_not_send = should_not_send || button->set_state(touch_phase.second);
+                    }
+                }
+                if (should_not_send)
+                    return false;
+            }
         }
         return true;
     }
@@ -482,5 +484,13 @@ namespace ms {
 
     const std::unordered_map<int16_t, TouchInfo> &UI::get_touch_phase() {
         return touch_phase_;
+    }
+
+    std::type_info const& UI::get_state_type() {
+        if (state_) {
+            return typeid(*state_);
+        } else {
+            return typeid(void); // Indicate that state_ is pointing to nullptr
+        }
     }
 }  // namespace ms

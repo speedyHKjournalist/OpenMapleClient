@@ -21,10 +21,11 @@
 #include "UIMobileInput.h"
 #include "UI.h"
 #include "TouchButton.h"
+#include "UIStateGame.h"
 
 namespace ms {
     UIMobileInput::UIMobileInput() :
-    joystick_(Point<int16_t>(250, 500), 120) {
+    joystick_(Point<int16_t>(250, 550), 130) {
         touch_buttons_[MobileButtons::ButtonJump] = std::make_unique<TouchButton>(Point<int16_t>(1050, 550),
                                                                           TouchButton::ActionType::Jump, "JUMP");
         touch_buttons_[MobileButtons::ButtonNormal0] = std::make_unique<TouchButton>(Point<int16_t>(1050, 400),
@@ -44,38 +45,42 @@ namespace ms {
     }
 
     void UIMobileInput::draw() const {
-        joystick_.draw();
-        for (const auto &iter : touch_buttons_) {
-            if (const TouchButton *button = iter.second.get()) {
-                button->draw();
+        if (UI::get().get_state_type() == typeid(UIStateGame)) {
+            joystick_.draw();
+            for (const auto &iter: touch_buttons_) {
+                if (const TouchButton *button = iter.second.get()) {
+                    button->draw();
+                }
             }
         }
     }
 
     void UIMobileInput::update() {
-        const std::unordered_map<int16_t, TouchInfo> &touch_phase_map = UI::get().get_touch_phase();
-        for (const auto &iter : touch_buttons_) {
-            if (TouchButton *button = iter.second.get()) {
-                for (const auto& touch_phase : touch_phase_map) {
-                    if (button->set_state(touch_phase.second))
-                        button->bind_touch_id(touch_phase.first);
+        if (UI::get().get_state_type() == typeid(UIStateGame)) {
+            const std::unordered_map<int16_t, TouchInfo> &touch_phase_map = UI::get().get_touch_phase();
+            for (const auto &iter: touch_buttons_) {
+                if (TouchButton *button = iter.second.get()) {
+                    for (const auto &touch_phase: touch_phase_map) {
+                        if (button->set_state(touch_phase.second))
+                            button->bind_touch_id(touch_phase.first);
+                    }
                 }
             }
-        }
 
-        for (const auto& touch_phase : touch_phase_map) {
-            if (joystick_.set_state(touch_phase.second)) {
-                joystick_.bind_touch_id(touch_phase.first);
+            for (const auto &touch_phase: touch_phase_map) {
+                if (joystick_.set_state(touch_phase.second)) {
+                    joystick_.bind_touch_id(touch_phase.first);
+                }
             }
-        }
 
-        for (const auto &iter : touch_buttons_) {
-            if (TouchButton *button = iter.second.get()) {
-                button->update();
+            for (const auto &iter: touch_buttons_) {
+                if (TouchButton *button = iter.second.get()) {
+                    button->update();
+                }
             }
-        }
 
-        joystick_.update();
+            joystick_.update();
+        }
     }
 
     std::map<uint16_t, std::unique_ptr<TouchButton>>& UIMobileInput::getTouchButtons() {

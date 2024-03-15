@@ -94,27 +94,26 @@ namespace ms {
         UI::get().set_touch_phase(touch, TouchInfo(relative_pos, phase));
         if (UI::get().should_send_cursor()) {
             Window::get().move_cursor(x, y);
-        }
+            switch (phase) {
+                case GLFMTouchPhaseHover:
+                    break;
+                case GLFMTouchPhaseBegan:
+                case GLFMTouchPhaseMoved:
+                    UI::get().send_cursor(true);
+                    break;
+                case GLFMTouchPhaseEnded: {
+                    auto diff_ms = ContinuousTimer::get().stop(start) / 1000;
+                    start = ContinuousTimer::get().start();
 
-        switch (phase) {
-            case GLFMTouchPhaseHover:
-                break;
-            case GLFMTouchPhaseBegan:
-            case GLFMTouchPhaseMoved:
-                UI::get().send_cursor(true);
-                break;
-            case GLFMTouchPhaseEnded: {
-                auto diff_ms = ContinuousTimer::get().stop(start) / 1000;
-                start = ContinuousTimer::get().start();
-
-                if (diff_ms > 10 && diff_ms < 200) {
-                    UI::get().doubleclick();
+                    if (diff_ms > 10 && diff_ms < 200) {
+                        UI::get().doubleclick();
+                    }
+                    UI::get().send_cursor(false);
+                    break;
                 }
-                UI::get().send_cursor(false);
-                break;
+                case GLFMTouchPhaseCancelled:
+                    break;
             }
-            case GLFMTouchPhaseCancelled:
-                break;
         }
 
         return true;

@@ -53,15 +53,10 @@ namespace ms {
             } else if (current_phase == GLFMTouchPhaseEnded) {
                 UI::get().remove_touch_phase(bind_touch_id_);
                 bind_touch_id_ = -1;
-                if (angle_ < 135.0 && angle_ >= 45.0) {
-                    UI::get().send_key(GLFMKeyCodeArrowDown, false);
-                } else if (angle_ < 225.0 && angle_ >= 135.0) {
-                    UI::get().send_key(GLFMKeyCodeArrowLeft, false);
-                } else if (angle_ < 325.0 && angle_ >= 225.0) {
-                    UI::get().send_key(GLFMKeyCodeArrowUp, false);
-                } else {
-                    UI::get().send_key(GLFMKeyCodeArrowRight, false);
-                }
+                UI::get().send_key(GLFMKeyCodeArrowDown, false);
+                UI::get().send_key(GLFMKeyCodeArrowLeft, false);
+                UI::get().send_key(GLFMKeyCodeArrowUp, false);
+                UI::get().send_key(GLFMKeyCodeArrowRight, false);
             }
         }
     }
