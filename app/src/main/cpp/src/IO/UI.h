@@ -28,136 +28,141 @@
 #include "../Template/OptionalCreator.h"
 #include "UIState.h"
 #include "UIMobileInput.h"
+#include "TouchInfo.h"
 
 namespace ms {
-class UI : public Singleton<UI> {
-public:
-    enum State { LOGIN, GAME, CASHSHOP };
+    class UI : public Singleton<UI> {
+    public:
+        enum State {
+            LOGIN, GAME, CASHSHOP
+        };
 
-    UI();
+        UI();
 
-    void init();
+        void init();
 
-    void draw(float alpha) const;
+        void draw(float alpha) const;
 
-    void update();
+        void update();
 
-    void enable();
+        void enable();
 
-    void disable();
+        void disable();
 
-    void change_state(State state);
+        void change_state(State state);
 
-    void quit();
+        void quit();
 
-    bool not_quitted() const;
+        bool not_quitted() const;
 
-    void send_cursor(Point<int16_t> pos);
+        void send_cursor(Point<int16_t> pos);
 
-    void send_cursor(bool pressed);
+        void send_cursor(bool pressed);
 
-    void send_cursor(Point<int16_t> cursorpos, Cursor::State cursorstate);
+        void send_cursor(Point<int16_t> cursorpos, Cursor::State cursorstate);
 
-    void send_focus(bool focused);
+        void send_focus(bool focused);
 
-    void send_scroll(double yoffset);
+        void send_scroll(double yoffset);
 
-    void send_close();
+        void send_close();
 
-    void rightclick();
+        void rightclick();
 
-    void doubleclick();
+        void doubleclick();
 
-    void send_key(int32_t keycode, bool pressed);
+        void send_key(int32_t keycode, bool pressed);
 
-    void send_key(uint32_t unicode);
+        void send_key(uint32_t unicode);
 
-    void set_scrollnotice(const std::string &notice);
+        void set_scrollnotice(const std::string &notice);
 
-    void focus_textfield(Textfield *textfield);
+        void focus_textfield(Textfield *textfield);
 
-    void remove_textfield();
+        void remove_textfield();
 
-    void drag_icon(Icon *icon);
+        void drag_icon(Icon *icon);
 
-    void add_keymapping(uint8_t no, uint8_t type, int32_t action);
+        void add_keymapping(uint8_t no, uint8_t type, int32_t action);
 
-    void clear_tooltip(Tooltip::Parent parent);
+        void clear_tooltip(Tooltip::Parent parent);
 
-    void show_equip(Tooltip::Parent parent, int16_t slot);
+        void show_equip(Tooltip::Parent parent, int16_t slot);
 
-    void show_item(Tooltip::Parent parent, int32_t item_id);
+        void show_item(Tooltip::Parent parent, int32_t item_id);
 
-    void show_skill(Tooltip::Parent parent,
-                    int32_t skill_id,
-                    int32_t level,
-                    int32_t masterlevel,
-                    int64_t expiration);
+        void show_skill(Tooltip::Parent parent,
+                        int32_t skill_id,
+                        int32_t level,
+                        int32_t masterlevel,
+                        int64_t expiration);
 
-    void show_text(Tooltip::Parent parent, std::string text);
+        void show_text(Tooltip::Parent parent, std::string text);
 
-    void show_map(Tooltip::Parent parent,
-                  std::string name,
-                  std::string description,
-                  int32_t mapid,
-                  bool bolded);
+        void show_map(Tooltip::Parent parent,
+                      std::string name,
+                      std::string description,
+                      int32_t mapid,
+                      bool bolded);
 
-    bool convert_touch_to_action(double x, double y);
+        bool should_send_cursor();
 
-    Keyboard &get_keyboard();
+        Keyboard &get_keyboard();
 
-    int64_t get_uptime();
+        int64_t get_uptime();
 
-    uint16_t get_uplevel();
+        uint16_t get_uplevel();
 
-    int64_t get_upexp();
+        int64_t get_upexp();
+
+        template<class T, typename... Args>
+        std::optional<std::reference_wrapper<T>> emplace(Args &&... args);
+
+        template<class T>
+        std::optional<std::reference_wrapper<T>> get_element();
+
+        void remove(UIElement::Type type);
+
+        void set_touch_phase(int16_t touch, TouchInfo touchPhase);
+
+        void remove_touch_phase(int16_t touch_id);
+
+        const std::unordered_map<int16_t, TouchInfo> &get_touch_phase();
+
+    private:
+        std::unique_ptr<UIState> state_;
+        std::unordered_map<int16_t, TouchInfo> touch_phase_;
+        Keyboard keyboard_;
+        Cursor cursor_;
+        ScrollingNotice scrolling_notice_;
+        UIMobileInput mobile_input_;
+
+        std::optional<std::reference_wrapper<Textfield>> focused_text_field_;
+        std::unordered_map<int32_t, bool> is_key_down_;
+
+        bool enabled_;
+        bool quitted_;
+        bool caps_lock_enabled_;
+
+        std::function<void()> fn_toggle_full_screen_;
+        std::function<void()> fn_set_clipboard_;
+        std::function<std::string()> fn_get_clipboard_;
+    };
 
     template<class T, typename... Args>
-    std::optional<std::reference_wrapper<T>> emplace(Args &&... args);
+    std::optional<std::reference_wrapper<T>> UI::emplace(Args &&... args) {
+        if (auto iter = state_->pre_add(T::TYPE, T::TOGGLED, T::FOCUSED)) {
+            (*iter).second = std::make_unique<T>(std::forward<Args>(args)...);
+        }
 
-    template<class T>
-    std::optional<std::reference_wrapper<T>> get_element();
-
-    void remove(UIElement::Type type);
-
-    void set_touch_phase(GLFMTouchPhase touchPhase);
-
-    GLFMTouchPhase get_touch_phase();
-
-private:
-    std::unique_ptr<UIState> state_;
-    GLFMTouchPhase touch_phase_;
-    Keyboard keyboard_;
-    Cursor cursor_;
-    ScrollingNotice scrolling_notice_;
-    UIMobileInput mobile_input_;
-
-    std::optional<std::reference_wrapper<Textfield>> focused_text_field_;
-    std::unordered_map<int32_t, bool> is_key_down_;
-
-    bool enabled_;
-    bool quitted_;
-    bool caps_lock_enabled_;
-
-    std::function<void()> fn_toggle_full_screen_;
-    std::function<void()> fn_set_clipboard_;
-    std::function<std::string()> fn_get_clipboard_;
-};
-
-template<class T, typename... Args>
-std::optional<std::reference_wrapper<T>> UI::emplace(Args &&... args) {
-    if (auto iter = state_->pre_add(T::TYPE, T::TOGGLED, T::FOCUSED)) {
-        (*iter).second = std::make_unique<T>(std::forward<Args>(args)...);
+        return create_optional<T>(state_->get(T::TYPE));
     }
 
-    return create_optional<T>(state_->get(T::TYPE));
-}
+    template<class T>
+    std::optional<std::reference_wrapper<T>> UI::get_element() {
+        UIElement::Type type = T::TYPE;
+        UIElement *element = state_->get(type);
 
-template<class T>
-std::optional<std::reference_wrapper<T>> UI::get_element() {
-    UIElement::Type type = T::TYPE;
-    UIElement *element = state_->get(type);
-
-    return create_optional<T>(element);
-}
+        return create_optional<T>(element);
+    }
 }  // namespace ms

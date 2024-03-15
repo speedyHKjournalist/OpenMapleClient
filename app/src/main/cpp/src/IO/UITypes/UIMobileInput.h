@@ -20,31 +20,31 @@
 #include "VirtualJoyStick.h"
 
 namespace ms {
-class UIMobileInput {
-public:
-    enum MobileButtons : uint16_t {
-        ButtonJump,
-        ButtonNormal0,
-        ButtonNormal1,
-        ButtonNormal2,
-        ButtonNormal3,
-        ButtonNormal4,
-        ButtonNormal5,
-        ButtonNormal6
+    class UIMobileInput {
+    public:
+        enum MobileButtons : uint16_t {
+            ButtonJump,
+            ButtonNormal0,
+            ButtonNormal1,
+            ButtonNormal2,
+            ButtonNormal3,
+            ButtonNormal4,
+            ButtonNormal5,
+            ButtonNormal6
+        };
+
+        UIMobileInput();
+
+        void draw() const;
+
+        void update();
+
+        std::map<uint16_t, std::unique_ptr<TouchButton>> &getTouchButtons();
+
+        VirtualJoyStick &getVirtualJoyStick();
+
+    private:
+        std::map<uint16_t, std::unique_ptr<TouchButton>> touch_buttons_;
+        VirtualJoyStick joystick_;
     };
-
-    UIMobileInput();
-
-    void draw() const;
-
-    void update();
-
-    std::map<uint16_t, std::unique_ptr<TouchButton>>& getTouchButtons();
-
-    VirtualJoyStick& getVirtualJoyStick();
-
-private:
-    std::map<uint16_t, std::unique_ptr<TouchButton>> touch_buttons_;
-    VirtualJoyStick joystick_;
-};
 }  // namespace ms

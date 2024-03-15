@@ -26,7 +26,6 @@ namespace ms {
     VirtualJoyStick::VirtualJoyStick(Point<int16_t> position, int16_t radius) :
             position_(position),
             background_(position.x(), position.y(), radius, Color::Name::BLACK, 0.535f) {
-        cursor_in_range_ = false;
         radius_ = radius;
         angle_ = 0;
     }
@@ -36,9 +35,12 @@ namespace ms {
     }
 
     void VirtualJoyStick::update() {
-        GLFMTouchPhase current_phase = UI::get().get_touch_phase();
-        if (cursor_in_range_) {
-            if (current_phase == GLFMTouchPhaseBegan || current_phase == GLFMTouchPhaseMoved) {
+        const std::unordered_map<int16_t, TouchInfo> &touch_phase_map = UI::get().get_touch_phase();
+        auto it = touch_phase_map.find(bind_touch_id_);
+        if (it != touch_phase_map.end()) {
+            GLFMTouchPhase current_phase = it->second.phase;
+            if (current_phase == GLFMTouchPhaseBegan ||
+                current_phase == GLFMTouchPhaseMoved) {
                 if (angle_ < 135.0 && angle_ >= 45.0) {
                     UI::get().send_key(GLFMKeyCodeArrowDown, true);
                 } else if (angle_ < 225.0 && angle_ >= 135.0) {
@@ -48,29 +50,41 @@ namespace ms {
                 } else {
                     UI::get().send_key(GLFMKeyCodeArrowRight, true);
                 }
+            } else if (current_phase == GLFMTouchPhaseEnded) {
+                UI::get().remove_touch_phase(bind_touch_id_);
+                bind_touch_id_ = -1;
+                if (angle_ < 135.0 && angle_ >= 45.0) {
+                    UI::get().send_key(GLFMKeyCodeArrowDown, false);
+                } else if (angle_ < 225.0 && angle_ >= 135.0) {
+                    UI::get().send_key(GLFMKeyCodeArrowLeft, false);
+                } else if (angle_ < 325.0 && angle_ >= 225.0) {
+                    UI::get().send_key(GLFMKeyCodeArrowUp, false);
+                } else {
+                    UI::get().send_key(GLFMKeyCodeArrowRight, false);
+                }
             }
-            cursor_in_range_ = false;
-        }
-        if (current_phase == GLFMTouchPhaseEnded) {
-            UI::get().send_key(GLFMKeyCodeArrowUp, false);
-            UI::get().send_key(GLFMKeyCodeArrowDown, false);
-            UI::get().send_key(GLFMKeyCodeArrowLeft, false);
-            UI::get().send_key(GLFMKeyCodeArrowRight, false);
         }
     }
 
-    bool VirtualJoyStick::set_state(Point<double_t> cursor_pos) {
-        int16_t distance_x = cursor_pos.x() - position_.x();
-        int16_t distance_y = cursor_pos.y() - position_.y();
+    bool VirtualJoyStick::set_state(TouchInfo touchInfo) {
+        int16_t distance_x = touchInfo.relative_pos.x() - position_.x();
+        int16_t distance_y = touchInfo.relative_pos.y() - position_.y();
         if (pow(distance_x, 2) + pow(distance_y, 2) <
             pow(radius_, 2)) {
-            cursor_in_range_ = true;
             angle_ = atan2(distance_y, distance_x) * 180.0 / M_PI;
             if (angle_ < 0)
                 angle_ += 360.0;
             return true;
         }
-        cursor_in_range_ = false;
         return false;
     }
+
+    void VirtualJoyStick::bind_touch_id(int16_t touch_id) {
+        bind_touch_id_ = touch_id;
+    }
+
+    int16_t VirtualJoyStick::get_bind_touch_id() {
+        return bind_touch_id_;
+    }
+
 }  // namespace ms

@@ -28,9 +28,9 @@ namespace ms {
             background_(100, 100, Color::Name::BLACK, 0.535f),
             bind_key_(GLFMKeyCodeUnknown),
             action_type_(action_type),
-            cursor_in_range_(false),
             text_(Text::Font::A18M, Text::Alignment::CENTER, Color::Name::YELLOW) {
         text_.change_text(text);
+        bind_touch_id_ = -1;
     }
 
     TouchButton::TouchButton(Point<int16_t> position, ActionType action_type, GLFMKeyCode bind_key,
@@ -41,6 +41,7 @@ namespace ms {
             action_type_(action_type),
             text_(Text::Font::A18M, Text::Alignment::CENTER, Color::Name::YELLOW) {
         text_.change_text(text);
+        bind_touch_id_ = -1;
     }
 
     void TouchButton::draw() const {
@@ -49,9 +50,12 @@ namespace ms {
     }
 
     void TouchButton::update() {
-        if (cursor_in_range_) {
-            GLFMTouchPhase current_phase = UI::get().get_touch_phase();
-            if (current_phase == GLFMTouchPhaseBegan || current_phase == GLFMTouchPhaseMoved) {
+        const std::unordered_map<int16_t, TouchInfo> &touch_phase_map = UI::get().get_touch_phase();
+        auto it = touch_phase_map.find(bind_touch_id_);
+        if (it != touch_phase_map.end()) {
+            GLFMTouchPhase current_phase = it->second.phase;
+            if (current_phase == GLFMTouchPhaseBegan ||
+                current_phase == GLFMTouchPhaseMoved) {
                 if (action_type_ == ActionType::Jump) {
                     Stage::get().get_player().send_action(KeyAction::Id::JUMP, true);
                 } else if (action_type_ == ActionType::Potion) {
@@ -61,18 +65,38 @@ namespace ms {
                 } else {
                     UI::get().send_key(bind_key_, true);
                 }
+            } else if (current_phase == GLFMTouchPhaseEnded) {
+                UI::get().remove_touch_phase(bind_touch_id_);
+                bind_touch_id_ = -1;
+                if (action_type_ == ActionType::Jump) {
+                    Stage::get().get_player().send_action(KeyAction::Id::JUMP, false);
+                } else if (action_type_ == ActionType::Potion) {
+
+                } else if (action_type_ == ActionType::Skill) {
+
+                } else {
+                    UI::get().send_key(bind_key_, false);
+                }
             }
-            cursor_in_range_ = false;
         }
     }
 
-    bool TouchButton::set_state(Point<double_t> cursor_pos) {
-        if (cursor_pos.x() > position_.x() && cursor_pos.x() < (position_.x() + 100) &&
-            cursor_pos.y() > position_.y() && cursor_pos.y() < (position_.y() + 100)) {
-            cursor_in_range_ = true;
+    bool TouchButton::set_state(TouchInfo touchInfo) {
+        if (touchInfo.relative_pos.x() > position_.x() &&
+            touchInfo.relative_pos.x() < (position_.x() + 100) &&
+            touchInfo.relative_pos.y() > position_.y() &&
+            touchInfo.relative_pos.y() < (position_.y() + 100)) {
             return true;
         }
-        cursor_in_range_ = false;
         return false;
     }
+
+    void TouchButton::bind_touch_id(int16_t touch_id) {
+        bind_touch_id_ = touch_id;
+    }
+
+    int16_t TouchButton::get_bind_touch_id() {
+        return bind_touch_id_;
+    }
+
 }  // namespace ms

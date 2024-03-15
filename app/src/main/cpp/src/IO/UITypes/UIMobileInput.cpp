@@ -53,12 +53,29 @@ namespace ms {
     }
 
     void UIMobileInput::update() {
-        joystick_.update();
+        const std::unordered_map<int16_t, TouchInfo> &touch_phase_map = UI::get().get_touch_phase();
+        for (const auto &iter : touch_buttons_) {
+            if (TouchButton *button = iter.second.get()) {
+                for (const auto& touch_phase : touch_phase_map) {
+                    if (button->set_state(touch_phase.second))
+                        button->bind_touch_id(touch_phase.first);
+                }
+            }
+        }
+
+        for (const auto& touch_phase : touch_phase_map) {
+            if (joystick_.set_state(touch_phase.second)) {
+                joystick_.bind_touch_id(touch_phase.first);
+            }
+        }
+
         for (const auto &iter : touch_buttons_) {
             if (TouchButton *button = iter.second.get()) {
                 button->update();
             }
         }
+
+        joystick_.update();
     }
 
     std::map<uint16_t, std::unique_ptr<TouchButton>>& UIMobileInput::getTouchButtons() {

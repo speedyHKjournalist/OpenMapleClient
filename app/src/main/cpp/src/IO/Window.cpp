@@ -89,8 +89,10 @@ namespace ms {
 
     bool mousekey_callback(GLFMDisplay *display, int touch, GLFMTouchPhase phase,
                            double x, double y) {
-        UI::get().set_touch_phase(phase);
-        if (!UI::get().convert_touch_to_action(x, y)) {
+        Point<double_t> relative_pos = Point<double_t>(x / Window::get().get_ratio_x(),
+                                                       y / Window::get().get_ratio_y());
+        UI::get().set_touch_phase(touch, TouchInfo(relative_pos, phase));
+        if (UI::get().should_send_cursor()) {
             Window::get().move_cursor(x, y);
         }
 
@@ -108,7 +110,6 @@ namespace ms {
                 if (diff_ms > 10 && diff_ms < 200) {
                     UI::get().doubleclick();
                 }
-
                 UI::get().send_cursor(false);
                 break;
             }
@@ -177,6 +178,7 @@ namespace ms {
                              GLFMDepthFormatNone,
                              GLFMStencilFormatNone,
                              GLFMMultisampleNone);
+        glfmSetMultitouchEnabled(display, true);
         return init_window();
     }
 

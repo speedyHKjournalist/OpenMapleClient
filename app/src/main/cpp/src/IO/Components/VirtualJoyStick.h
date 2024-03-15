@@ -16,6 +16,7 @@
 #pragma once
 #include "IconCover.h"
 #include "Button.h"
+#include "TouchInfo.h"
 
 namespace ms {
 class VirtualJoyStick {
@@ -26,13 +27,17 @@ public:
 
     void update();
 
-    bool set_state(Point<double_t> cursor_pos);
+    bool set_state(TouchInfo touchInfo);
+
+    void bind_touch_id(int16_t touch_id);
+
+    int16_t get_bind_touch_id();
 
 private:
     Point<int16_t> position_;
     ColorCircle background_;
     int16_t radius_;
-    bool cursor_in_range_;
+    int16_t bind_touch_id_;
     double angle_;
 };
 }  // namespace ms

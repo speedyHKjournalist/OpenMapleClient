@@ -16,6 +16,7 @@
 #pragma once
 #include "IconCover.h"
 #include "glfm.h"
+#include "TouchInfo.h"
 
 namespace ms {
 class TouchButton {
@@ -35,14 +36,18 @@ public:
 
     void update();
 
-    bool set_state(Point<double_t> cursor_pos);
+    void bind_touch_id(int16_t touch_id);
+
+    bool set_state(TouchInfo touchInfo);
+
+    int16_t get_bind_touch_id();
 
 private:
     Point<int16_t> position_;
     ColorBox background_;
     GLFMKeyCode bind_key_;
     ActionType action_type_;
-    bool cursor_in_range_;
     Text text_;
+    int16_t bind_touch_id_;
 };
 }  // namespace ms
