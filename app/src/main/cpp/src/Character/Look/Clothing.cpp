@@ -26,6 +26,11 @@ Clothing::Clothing(int32_t id, const BodyDrawInfo &drawinfo) : item_id_(id) {
 
     eq_slot_ = equipdata.get_eqslot();
 
+    if (item_id_ == TOP_DEFAULT_ID)
+        eq_slot_ = EquipSlot::Id::TOP_DEFAULT;
+    else if (item_id_ == BOTTOM_DEFAULT_ID)
+        eq_slot_ = EquipSlot::Id::BOTTOM_DEFAULT;
+
     if (eq_slot_ == EquipSlot::Id::WEAPON) {
         two_handed_ = WeaponData::get(item_id_).is_twohanded();
     } else {
@@ -50,7 +55,11 @@ Clothing::Clothing(int32_t id, const BodyDrawInfo &drawinfo) : item_id_(id) {
     Clothing::Layer chlayer;
     size_t index = (item_id_ / 10000) - 100;
 
-    if (index < NON_WEAPON_TYPES) {
+    if (item_id_ == TOP_DEFAULT_ID) {
+        chlayer = Clothing::Layer::TOP_DEFAULT;
+    } else if (item_id_ == BOTTOM_DEFAULT_ID) {
+        chlayer = Clothing::Layer::PANTS_DEFAULT;
+    } else if (index < NON_WEAPON_TYPES) {
         chlayer = layers[index];
     } else if (index >= WEAPON_OFFSET && index < WEAPON_OFFSET + WEAPON_TYPES) {
         chlayer = Clothing::Layer::WEAPON;
@@ -131,7 +140,9 @@ Clothing::Clothing(int32_t id, const BodyDrawInfo &drawinfo) : item_id_(id) {
                     case EquipSlot::Id::SHOES:
                     case EquipSlot::Id::GLOVES:
                     case EquipSlot::Id::TOP:
+                    case EquipSlot::Id::TOP_DEFAULT:
                     case EquipSlot::Id::BOTTOM:
+                    case EquipSlot::Id::BOTTOM_DEFAULT:
                     case EquipSlot::Id::CAPE:
                         shift = drawinfo.get_body_position(stance, frame)
                                 - parentpos;

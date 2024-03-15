@@ -22,6 +22,9 @@
 namespace ms {
 class Clothing {
 public:
+    // Defaults when no clothes are equipped
+    static constexpr int32_t TOP_DEFAULT_ID = 1042399;
+    static constexpr int32_t BOTTOM_DEFAULT_ID = 1060026;
     enum Layer {
         CAPE,
         SHOES,
@@ -56,6 +59,8 @@ public:
         WEAPON_OVER_HAND,
         WEAPON_OVER_BODY,
         WEAPON_OVER_GLOVE,
+        PANTS_DEFAULT,
+        TOP_DEFAULT,
         NUM_LAYERS
     };
 
