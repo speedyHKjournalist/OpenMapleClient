@@ -87,6 +87,10 @@ namespace ms {
     std::chrono::time_point<std::chrono::steady_clock> start =
             ContinuousTimer::get().start();
 
+    std::chrono::time_point<std::chrono::steady_clock> click_start_time;
+
+    bool sent = false;
+
     bool mousekey_callback(GLFMDisplay *display, int touch, GLFMTouchPhase phase,
                            double x, double y) {
         Point<double_t> relative_pos = Point<double_t>(x / Window::get().get_ratio_x(),
@@ -97,11 +101,28 @@ namespace ms {
             switch (phase) {
                 case GLFMTouchPhaseHover:
                     break;
-                case GLFMTouchPhaseBegan:
-                case GLFMTouchPhaseMoved:
-                    UI::get().send_cursor(true);
+                case GLFMTouchPhaseBegan: {
+                    click_start_time = std::chrono::steady_clock::now();
+                    UI::get().send_cursor(false);
                     break;
+                }
+                case GLFMTouchPhaseMoved: {
+                    auto diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                            std::chrono::steady_clock::now() - click_start_time).count();
+                    if (diff_ms > 500) {
+                        if (!sent)
+                            UI::get().send_cursor(true);
+                    } else {
+                        UI::get().send_cursor(false);
+                    }
+                    break;
+                }
                 case GLFMTouchPhaseEnded: {
+                    if (sent)
+                        sent = false;
+                    else {
+                        UI::get().send_cursor(true);
+                    }
                     auto diff_ms = ContinuousTimer::get().stop(start) / 1000;
                     start = ContinuousTimer::get().start();
 
