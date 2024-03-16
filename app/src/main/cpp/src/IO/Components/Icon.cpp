@@ -16,6 +16,7 @@
 #include "Icon.h"
 
 #include <nlnx/nx.hpp>
+#include <android/log.h>
 
 #include "../../Audio/Audio.h"
 #include "Charset.h"
@@ -66,7 +67,10 @@ bool Icon::drop_on_items(InventoryType::Id tab,
         return false;
     }
 
-    bool remove_icon = type_->drop_on_items(tab, eqslot, slot, equip);
+    bool remove_icon = false;
+    if (type_) {
+        remove_icon = type_->drop_on_items(tab, eqslot, slot, equip);
+    }
 
     if (remove_icon) {
         Sound(Sound::Name::DRAG_END).play();
