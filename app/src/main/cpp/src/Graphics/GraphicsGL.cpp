@@ -690,19 +690,29 @@ namespace ms {
                         switch (text[first + 1]) {
                             case 'k':
                                 color_ = Color::Name::DARKGREY;
+                                skip++;
                                 break;
                             case 'b':
                                 color_ = Color::Name::BLUE;
+                                skip++;
                                 break;
                             case 'r':
                                 color_ = Color::Name::RED;
+                                skip++;
                                 break;
                             case 'c':
                                 color_ = Color::Name::ORANGE;
+                                skip++;
+                                break;
+                            case 'L':
+                                skip++;
+                                break;
+                            case 'l':
+                                skip++;
+                                break;
+                            default:
                                 break;
                         }
-
-                        skip++;
                     }
 
                     skip++;
