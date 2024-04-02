@@ -16,7 +16,7 @@
 #include "MapleButton.h"
 
 namespace ms {
-MapleButton::MapleButton(const nl::node &src, Point<int16_t> pos) {
+    MapleButton::MapleButton(const nl::node &src, Point<int16_t> pos) {
     nl::node normal = src["normal"];
 
     if (normal.size() > 1) {

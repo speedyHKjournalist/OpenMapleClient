@@ -32,14 +32,16 @@ void NpcDialogueHandler::handle(InPacket &recv) const {
     uint8_t style_b0 = 0;
     uint8_t style_b1 = 0;
 
-    if (msgtype == 0 && recv.length() > 0) {
-        // {b0, b1}
-        // {0, 1} = next
-        // {1, 0} = prev
-        // {1, 1} = nextPrev
-        // {0, 0} = ok
-        style_b0 = recv.read_ubyte();
-        style_b1 = recv.read_ubyte();
+    if (recv.length() > 0) {
+        if (msgtype == 0) {
+            // {b0, b1}
+            // {0, 1} = next
+            // {1, 0} = prev
+            // {1, 1} = nextPrev
+            // {0, 0} = ok
+            style_b0 = recv.read_ubyte();
+            style_b1 = recv.read_ubyte();
+        }
     }
 
     UI::get().emplace<UINpcTalk>();

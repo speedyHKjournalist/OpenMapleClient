@@ -18,6 +18,7 @@
 #include "../Components/Slider.h"
 #include "../Graphics/Text.h"
 #include "../UIElement.h"
+#include "TextButton.h"
 
 namespace ms {
 class UINpcTalk : public UIElement {
@@ -36,6 +37,16 @@ public:
         SEND_GET_TEXT,
         SEND_GET_NUMBER,
         LENGTH
+    };
+
+    struct NPCTalkContent {
+        void  set_content(std::string& line);
+
+        Text text_;
+        std::vector<Text> text_content_;
+        std::vector<TextButton> text_button_content_;
+        Color::Name line_color_ = Color::Name::DARKGREY;
+        int16_t selection_;
     };
 
     static constexpr Type TYPE = UIElement::Type::NPC_TALK;
@@ -69,6 +80,10 @@ private:
 
     std::string format_text(const std::string &tx, const int32_t &npcid);
 
+    NPCTalkContent convert_npc_text(std::string& formatted_text_);
+
+    void reset_content_pos();
+
     static constexpr int16_t MAX_HEIGHT_ = 248;
 
     enum Buttons {
@@ -86,7 +101,8 @@ private:
         QNO,
         QSTART,
         QYES,
-        YES
+        YES,
+        TEXT_BUTTON
     };
 
     Texture top_;
@@ -95,7 +111,7 @@ private:
     Texture nametag_;
     Texture speaker_;
 
-    Text text_;
+    NPCTalkContent content_;
     Text name_;
 
     int16_t height_;

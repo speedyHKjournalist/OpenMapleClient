@@ -75,6 +75,7 @@ add_library(OpenMapleClient SHARED
         src/IO/Components/SkillTooltip.cpp
         src/IO/Components/Slider.cpp
         src/IO/Components/StatefulIcon.cpp
+        src/IO/Components/TextButton.cpp
         src/IO/Components/Textfield.cpp
         src/IO/Components/TextTooltip.cpp
         src/IO/Components/TouchButton.cpp
