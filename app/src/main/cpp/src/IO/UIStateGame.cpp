@@ -154,6 +154,7 @@ namespace ms {
     void UIStateGame::doubleclick(Point<int16_t> pos) {
         if (UIElement *front = get_front(pos)) {
             front->doubleclick(pos);
+            dragged_icon_ = {};  //Fix UIItemInventory crash when doubleclick equipment happens after dragging
         } else {
             Stage::get().doubleclick(pos);
         }
