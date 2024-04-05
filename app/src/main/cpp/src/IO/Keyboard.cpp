@@ -146,7 +146,7 @@ namespace ms {
         keymap_[GLFMKeyCodeNumpadEnter] = Mapping(KeyType::Id::ACTION, KeyAction::Id::RETURN);
         keymap_[GLFMKeyCodeTab] = Mapping(KeyType::Id::ACTION, KeyAction::Id::TAB);
 
-        text_actions_[GLFMKeyCodeDelete] = KeyAction::Id::BACK;
+        text_actions_[GLFMKeyCodeBackspace] = KeyAction::Id::BACK;
         text_actions_[GLFMKeyCodeEnter] = KeyAction::Id::RETURN;
         text_actions_[GLFMKeyCodeNumpadEnter] = KeyAction::Id::RETURN;
         text_actions_[GLFMKeyCodeSpace] = KeyAction::Id::SPACE;
