@@ -599,6 +599,11 @@ void UICharSelect::add_character(CharEntry &&character) {
     characters_.emplace_back(std::forward<CharEntry>(character));
 
     characters_count_++;
+
+    if (characters_count_ == 1) {
+        update_buttons();
+        update_selected_character();
+    }
 }
 
 void UICharSelect::post_add_character() {
@@ -612,8 +617,6 @@ void UICharSelect::post_add_character() {
 
     if (characters_count_ > 1) {
         select_last_slot();
-    } else {
-        update_selected_character();
     }
 
     makeactive();
