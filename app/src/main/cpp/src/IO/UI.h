@@ -55,7 +55,7 @@ namespace ms {
 
         bool not_quitted() const;
 
-        void send_cursor(Point<int16_t> pos);
+        void send_cursor(float x, float y);
 
         void send_cursor(bool pressed);
 
@@ -105,8 +105,6 @@ namespace ms {
                       int32_t mapid,
                       bool bolded);
 
-        bool should_send_cursor();
-
         Keyboard &get_keyboard();
 
         int64_t get_uptime();
@@ -123,21 +121,15 @@ namespace ms {
 
         void remove(UIElement::Type type);
 
-        void set_touch_phase(int16_t touch, TouchInfo touchPhase);
+        void set_keyboard_status(bool status);
 
-        void remove_touch_phase(int16_t touch_id);
-
-        const std::unordered_map<int16_t, TouchInfo> &get_touch_phase();
-
-        std::type_info const& get_state_type();
+        Cursor& get_cursor();
 
     private:
         std::unique_ptr<UIState> state_;
-        std::unordered_map<int16_t, TouchInfo> touch_phase_;
         Keyboard keyboard_;
         Cursor cursor_;
         ScrollingNotice scrolling_notice_;
-        UIMobileInput mobile_input_;
 
         std::optional<std::reference_wrapper<Textfield>> focused_text_field_;
         std::unordered_map<int32_t, bool> is_key_down_;

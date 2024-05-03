@@ -60,6 +60,7 @@ add_library(OpenMapleClient SHARED
         src/IO/Components/Button.cpp
         src/IO/Components/Charset.cpp
         src/IO/Components/ChatBalloon.cpp
+        src/IO/Components/ControlUIButton.cpp
         src/IO/Components/EquipTooltip.cpp
         src/IO/Components/Gauge.cpp
         src/IO/Components/Icon.cpp
@@ -78,13 +79,16 @@ add_library(OpenMapleClient SHARED
         src/IO/Components/TextButton.cpp
         src/IO/Components/Textfield.cpp
         src/IO/Components/TextTooltip.cpp
-        src/IO/Components/TouchButton.cpp
+        src/IO/Components/JumpButton.cpp
+        src/IO/Components/SkillUseButton.cpp
         src/IO/Components/TwoSpriteButton.cpp
-        src/IO/Components/VirtualJoyStick.cpp
+        src/IO/Components/JoyStickButton.cpp
         src/Game.cpp
         src/IO/Cursor.cpp
         src/IO/Keyboard.cpp
         src/IO/Messages.cpp
+        src/IO/TapDetector.cpp
+        src/IO/TouchInfo.cpp
         src/IO/UI.cpp
         src/IO/UIElement.cpp
         src/IO/UIStateCashShop.cpp

@@ -65,6 +65,7 @@ namespace ms {
         emplace<UIMiniMap>(stats_);
         emplace<UIBuffList>();
         emplace<UIShop>(look, inventory);
+        emplace<UIMobileInput>();
 
         VWIDTH = Constants::Constants::get().get_viewwidth();
         VHEIGHT = Constants::Constants::get().get_viewheight();

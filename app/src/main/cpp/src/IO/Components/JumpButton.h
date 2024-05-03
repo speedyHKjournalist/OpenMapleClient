@@ -14,40 +14,42 @@
 //	You should have received a copy of the GNU Affero General Public License
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #pragma once
+
 #include "IconCover.h"
 #include "glfm.h"
 #include "TouchInfo.h"
+#include "Configuration.h"
+#include "UIDragElement.h"
+#include "UIStateGame.h"
+#include "../Data/ItemData.h"
+#include "StringHandling.h"
+#include "UIMobileInput.h"
+#include "UI.h"
+#include "SkillUseButton.h"
 
 namespace ms {
-class TouchButton {
-public:
-    enum ActionType : uint16_t {
-        Jump,
-        Skill,
-        Potion,
-        Default
+    class JumpButton : public Button {
+    public:
+        JumpButton(Point<int16_t> position);
+
+        void draw(Point<int16_t> parentpos) const override;
+
+        void update() override;
+
+        Rectangle<int16_t> bounds(Point<int16_t> parentpos) const override;
+
+        int16_t width() const override;
+
+        Point<int16_t> origin() const override;
+
+        Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
+
+        bool in_combobox(Point<int16_t> cursorpos) override;
+
+    private:
+        Point<int16_t> dimension_;
+        ColorBox background_;
+        Text text_;
+        bool jump_;
     };
-
-    TouchButton(Point<int16_t> position, ActionType action_type, const std::string &text);
-
-    TouchButton(Point<int16_t> position, ActionType action_type, GLFMKeyCode bind_key, const std::string &text);
-
-    void draw() const;
-
-    void update();
-
-    void bind_touch_id(int16_t touch_id);
-
-    bool set_state(TouchInfo touchInfo);
-
-    int16_t get_bind_touch_id();
-
-private:
-    Point<int16_t> position_;
-    ColorBox background_;
-    GLFMKeyCode bind_key_;
-    ActionType action_type_;
-    Text text_;
-    int16_t bind_touch_id_;
-};
 }  // namespace ms

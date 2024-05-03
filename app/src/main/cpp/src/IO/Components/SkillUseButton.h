@@ -1,0 +1,14 @@
+//
+// Created by 任睿思 on 2024/4/24.
+//
+
+#ifndef GLFW_ANDROID_EXAMPLE_SKILLUSEBUTTON_H
+#define GLFW_ANDROID_EXAMPLE_SKILLUSEBUTTON_H
+
+
+class SkillUseButton {
+
+};
+
+
+#endif //GLFW_ANDROID_EXAMPLE_SKILLUSEBUTTON_H

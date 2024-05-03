@@ -13,81 +13,176 @@
 //
 //	You should have received a copy of the GNU Affero General Public License
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#include <nlnx/node.hpp>
-#include <nlnx/nx.hpp>
-
-#include "../Data/ItemData.h"
-#include "StringHandling.h"
 #include "UIMobileInput.h"
-#include "UI.h"
-#include "TouchButton.h"
-#include "UIStateGame.h"
 
 namespace ms {
-    UIMobileInput::UIMobileInput() :
-    joystick_(Point<int16_t>(250, 550), 130) {
-        touch_buttons_[MobileButtons::ButtonJump] = std::make_unique<TouchButton>(Point<int16_t>(1050, 550),
-                                                                          TouchButton::ActionType::Jump, "JUMP");
-        touch_buttons_[MobileButtons::ButtonNormal0] = std::make_unique<TouchButton>(Point<int16_t>(1050, 400),
-                                                                                  TouchButton::ActionType::Default,GLFMKeyCode0, "0");
-        touch_buttons_[MobileButtons::ButtonNormal1] = std::make_unique<TouchButton>(Point<int16_t>(1050, 250),
-                                                                                    TouchButton::ActionType::Default,GLFMKeyCode1, "1");
-        touch_buttons_[MobileButtons::ButtonNormal2] = std::make_unique<TouchButton>(Point<int16_t>(1050, 100),
-                                                                                     TouchButton::ActionType::Default,GLFMKeyCode2, "2");
-        touch_buttons_[MobileButtons::ButtonNormal3] = std::make_unique<TouchButton>(Point<int16_t>(1200, 100),
-                                                                                     TouchButton::ActionType::Default,GLFMKeyCode3, "3");
-        touch_buttons_[MobileButtons::ButtonNormal4] = std::make_unique<TouchButton>(Point<int16_t>(1200, 250),
-                                                                                     TouchButton::ActionType::Default,GLFMKeyCode4, "4");
-        touch_buttons_[MobileButtons::ButtonNormal5] = std::make_unique<TouchButton>(Point<int16_t>(1200, 400),
-                                                                                     TouchButton::ActionType::Default,GLFMKeyCode5, "5");
-        touch_buttons_[MobileButtons::ButtonNormal6] = std::make_unique<TouchButton>(Point<int16_t>(1200, 550),
-                                                                                     TouchButton::ActionType::Default,GLFMKeyCode6, "6");
+    UIMobileInput::UIMobileInput() : UIDragElement<PosMobileInput>() {
+        // Controllers
+        buttons_[Buttons::BT_JUMP] = std::make_unique<JumpButton>(Point<int16_t>(1050, 550));
+        buttons_[Buttons::BT_JOYSTICK] = std::make_unique<JoyStickButton>(Point<int16_t>(250, 550));
+        // UI Control
+        buttons_[Buttons::BT_UICONTROL] = std::make_unique<ControlUIButton>(Point<int16_t>(600, 25),
+                                                                            "UI CONF");
+        buttons_[Buttons::BT_HIDEUI] = std::make_unique<ControlUIButton>(Point<int16_t>(600, 125),
+                                                                         "TOGGLE UI");
+        buttons_[Buttons::BT_DRAGUI] = std::make_unique<ControlUIButton>(Point<int16_t>(600, 225),
+                                                                         "DRAG UI");
+//        mobile_buttons_.emplace(std::make_unique<SkillUseButton>(Point<int16_t>(1050, 100), ACTION_TYPE::ATTACK);
+//        mobile_buttons_.emplace(std::make_unique<SkillUseButton>(Point<int16_t>(1050, 250), ACTION_TYPE::NONE);
+//        mobile_buttons_.emplace(std::make_unique<SkillUseButton>(Point<int16_t>(1050, 400), ACTION_TYPE::NONE);
+//        mobile_buttons_.emplace(std::make_unique<SkillUseButton>(Point<int16_t>(1200, 100), ACTION_TYPE::NONE);
+//        mobile_buttons_.emplace(std::make_unique<SkillUseButton>(Point<int16_t>(1200, 250), ACTION_TYPE::NONE);
+//        mobile_buttons_.emplace(std::make_unique<SkillUseButton>(Point<int16_t>(1200, 400), ACTION_TYPE::NONE);
+
+        buttons_[Buttons::BT_JUMP]->set_active(true);
+        buttons_[Buttons::BT_JOYSTICK]->set_active(true);
+        buttons_[Buttons::BT_UICONTROL]->set_active(true);
+        buttons_[Buttons::BT_HIDEUI]->set_active(false);
+        buttons_[Buttons::BT_DRAGUI]->set_active(false);
+
+        show_ui = true;
+        drag_ui = false;
+
+        prev_cursor_pos = Point<int16_t>(0, 0);
+        curr_cursor_pos = Point<int16_t>(0, 0);
     }
 
-    void UIMobileInput::draw() const {
-        if (UI::get().get_state_type() == typeid(UIStateGame)) {
-            joystick_.draw();
-            for (const auto &iter: touch_buttons_) {
-                if (const TouchButton *button = iter.second.get()) {
-                    button->draw();
-                }
-            }
+    void UIMobileInput::draw(float inter) const {
+        for (const auto &iter: buttons_) {
+            iter.second->draw(position_);
         }
     }
 
     void UIMobileInput::update() {
-        if (UI::get().get_state_type() == typeid(UIStateGame)) {
-            const std::unordered_map<int16_t, TouchInfo> &touch_phase_map = UI::get().get_touch_phase();
-            for (const auto &iter: touch_buttons_) {
-                if (TouchButton *button = iter.second.get()) {
-                    for (const auto &touch_phase: touch_phase_map) {
-                        if (button->set_state(touch_phase.second))
-                            button->bind_touch_id(touch_phase.first);
-                    }
+        if (drag_ui) {
+            for (const auto &iter: buttons_) {
+                if (iter.second->in_combobox(prev_cursor_pos) &&
+                    iter.second->in_combobox(curr_cursor_pos) && iter.second->is_draggable()) {
+                    Point<int16_t> pos = iter.second->get_position();
+                    iter.second->set_position(pos + curr_cursor_pos - prev_cursor_pos);
+                    prev_cursor_pos = curr_cursor_pos;
+                    break;
                 }
             }
+        }
 
-            for (const auto &touch_phase: touch_phase_map) {
-                if (joystick_.set_state(touch_phase.second)) {
-                    joystick_.bind_touch_id(touch_phase.first);
-                }
-            }
-
-            for (const auto &iter: touch_buttons_) {
-                if (TouchButton *button = iter.second.get()) {
-                    button->update();
-                }
-            }
-
-            joystick_.update();
+        for (const auto &iter: buttons_) {
+            iter.second->update();
         }
     }
 
-    std::map<uint16_t, std::unique_ptr<TouchButton>>& UIMobileInput::getTouchButtons() {
-        return touch_buttons_;
+    Cursor::State UIMobileInput::send_cursor(bool clicked, Point<int16_t> cursorpos) {
+        if (drag_ui) {
+            if (curr_cursor_pos != cursorpos) {
+                if (prev_cursor_pos.x() == 0 && prev_cursor_pos.y() == 0) {
+                    prev_cursor_pos = curr_cursor_pos = cursorpos;
+                } else {
+                    prev_cursor_pos = curr_cursor_pos;
+                    curr_cursor_pos = cursorpos;
+                }
+            }
+        } else {
+            prev_cursor_pos = curr_cursor_pos = Point<int16_t>(0, 0);
+        }
+
+        if (!drag_ui) {
+            buttons_[Buttons::BT_JUMP]->send_cursor(clicked, cursorpos);
+            buttons_[Buttons::BT_JOYSTICK]->send_cursor(clicked, cursorpos);
+        }
+
+        Cursor::State ret = clicked ? Cursor::State::CLICKING : Cursor::State::IDLE;
+
+        for (auto &btit: buttons_) {
+            if (btit.second->is_active()
+                && btit.second->bounds(position_).contains(cursorpos)) {
+                if (btit.second->get_state() == Button::State::NORMAL) {
+                    btit.second->set_state(Button::State::MOUSEOVER);
+                    ret = Cursor::State::CAN_CLICK;
+                } else if (btit.second->get_state() == Button::State::MOUSEOVER) {
+                    if (clicked) {
+                        btit.second->set_state(button_pressed(btit.first));
+
+                        ret = Cursor::State::IDLE;
+                    } else {
+                        ret = Cursor::State::CAN_CLICK;
+                    }
+                }
+            } else if (btit.second->get_state() == Button::State::MOUSEOVER) {
+                btit.second->set_state(Button::State::NORMAL);
+            }
+        }
+
+        return ret;
     }
 
-    VirtualJoyStick& UIMobileInput::getVirtualJoyStick() {
-        return joystick_;
+    Button::State UIMobileInput::button_pressed(uint16_t id) {
+        switch (id) {
+            case Buttons::BT_UICONTROL: {
+                bool UI_control_active_ = buttons_[Buttons::BT_HIDEUI]->is_active();
+                toggle_UIControl(!UI_control_active_);
+                break;
+            }
+            case Buttons::BT_HIDEUI: {
+                toggle_ui();
+                break;
+            }
+            case Buttons::BT_DRAGUI: {
+                drag_ui = !drag_ui;
+                buttons_[Buttons::BT_HIDEUI]->set_active(false);
+                buttons_[Buttons::BT_DRAGUI]->set_active(false);
+                break;
+            }
+        }
+        return Button::State::NORMAL;
+    }
+
+    void UIMobileInput::toggle_UIControl(bool state) {
+        buttons_[Buttons::BT_UICONTROL]->set_active(true);
+        buttons_[Buttons::BT_HIDEUI]->set_active(state);
+        buttons_[Buttons::BT_DRAGUI]->set_active(state);
+
+        if (buttons_[Buttons::BT_UICONTROL]->is_active()) {
+            buttons_[Buttons::BT_UICONTROL]->set_state(
+                    Button::State::MOUSEOVER);
+
+            Sound(Sound::Name::DLG_NOTICE).play();
+        }
+    }
+
+    void UIMobileInput::toggle_ui() {
+        if (show_ui) {
+            buttons_[Buttons::BT_JUMP]->set_active(false);
+            buttons_[Buttons::BT_JOYSTICK]->set_active(false);
+            buttons_[Buttons::BT_HIDEUI]->set_active(false);
+            buttons_[Buttons::BT_DRAGUI]->set_active(false);
+        } else {
+            buttons_[Buttons::BT_JUMP]->set_active(true);
+            buttons_[Buttons::BT_JOYSTICK]->set_active(true);
+            buttons_[Buttons::BT_HIDEUI]->set_active(false);
+            buttons_[Buttons::BT_DRAGUI]->set_active(false);
+        }
+        show_ui = !show_ui;
+    }
+
+    bool UIMobileInput::is_menu_active() {
+        return buttons_[Buttons::BT_HIDEUI]->is_active();
+    }
+
+    void UIMobileInput::remove_menus() {
+        if (buttons_[Buttons::BT_HIDEUI]->is_active()) {
+            toggle_UIControl(false);
+        }
+    }
+
+    UIElement::Type UIMobileInput::get_type() const {
+        return TYPE;
+    }
+
+    bool UIMobileInput::is_in_range(Point<int16_t> cursorpos) const {
+        bool in_range = false;
+        for (const auto &iter: buttons_) {
+            in_range = in_range || iter.second->in_combobox(position_ + cursorpos);
+        }
+        return in_range;
     }
 }  // namespace ms

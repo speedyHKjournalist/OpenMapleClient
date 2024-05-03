@@ -16,43 +16,51 @@
 #include "Button.h"
 
 namespace ms {
-bool Button::in_combobox(Point<int16_t>) {
-    return false;
-}
-
-uint16_t Button::get_selected() const {
-    return uint16_t();
-}
-
-void Button::set_position(Point<int16_t> pos) {
-    position_ = pos;
-}
-
-void Button::set_state(State s) {
-    if (s == Button::State::IDENTITY) {
-        return;
+    bool Button::in_combobox(Point<int16_t>) {
+        return false;
     }
 
-    state_ = s;
-}
+    uint16_t Button::get_selected() const {
+        return uint16_t();
+    }
 
-void Button::set_active(bool a) {
-    active_ = a;
-}
+    void Button::set_position(Point<int16_t> pos) {
+        position_ = pos;
+    }
 
-void Button::toggle_pressed() {
-    pressed_ = !pressed_;
-}
+    Point<int16_t> Button::get_position() {
+        return position_;
+    }
 
-bool Button::is_active() const {
-    return active_ && state_ != Button::State::DISABLED;
-}
+    void Button::set_state(State s) {
+        if (s == Button::State::IDENTITY) {
+            return;
+        }
 
-Button::State Button::get_state() const {
-    return state_;
-}
+        state_ = s;
+    }
 
-bool Button::is_pressed() const {
-    return pressed_;
-}
+    void Button::set_active(bool a) {
+        active_ = a;
+    }
+
+    void Button::toggle_pressed() {
+        pressed_ = !pressed_;
+    }
+
+    bool Button::is_active() const {
+        return active_ && state_ != Button::State::DISABLED;
+    }
+
+    Button::State Button::get_state() const {
+        return state_;
+    }
+
+    bool Button::is_pressed() const {
+        return pressed_;
+    }
+
+    bool Button::is_draggable() const {
+        return draggable_;
+    }
 }  // namespace ms

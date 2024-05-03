@@ -77,74 +77,22 @@ namespace ms {
         // Convert each wide character to uint32_t and use it as needed
         for (size_t i = 0; i < length; ++i) {
             uint32_t unicode_value = static_cast<uint32_t>(wide_string[i]);
-            // Now you have the uint32_t representation of the Unicode character
-            // You can use it as needed
             UI::get().send_key(unicode_value);
         }
         delete[] wide_string;
     }
 
-    std::chrono::time_point<std::chrono::steady_clock> start =
-            ContinuousTimer::get().start();
-
-    std::chrono::time_point<std::chrono::steady_clock> click_start_time;
-
-    bool sent = false;
+    TapDetector detector;
+    std::chrono::time_point<std::chrono::steady_clock> start = ContinuousTimer::get().start();
 
     bool mousekey_callback(GLFMDisplay *display, int touch, GLFMTouchPhase phase,
                            double x, double y) {
-        Point<double_t> relative_pos = Point<double_t>(x / Window::get().get_ratio_x(),
-                                                       y / Window::get().get_ratio_y());
-        UI::get().set_touch_phase(touch, TouchInfo(relative_pos, phase));
-        if (UI::get().should_send_cursor()) {
-            Window::get().move_cursor(x, y);
-            switch (phase) {
-                case GLFMTouchPhaseHover:
-                    break;
-                case GLFMTouchPhaseBegan: {
-                    click_start_time = std::chrono::steady_clock::now();
-                    UI::get().send_cursor(false);
-                    break;
-                }
-                case GLFMTouchPhaseMoved: {
-                    auto diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-                            std::chrono::steady_clock::now() - click_start_time).count();
-                    if (diff_ms > 500) {
-                        if (!sent)
-                            UI::get().send_cursor(true);
-                    } else {
-                        UI::get().send_cursor(false);
-                    }
-                    break;
-                }
-                case GLFMTouchPhaseEnded: {
-                    if (sent)
-                        sent = false;
-                    else {
-                        UI::get().send_cursor(true);
-                    }
-                    auto diff_ms = ContinuousTimer::get().stop(start) / 1000;
-                    start = ContinuousTimer::get().start();
-
-                    if (diff_ms > 10 && diff_ms < 200) {
-                        UI::get().doubleclick();
-                    }
-                    UI::get().send_cursor(false);
-                    break;
-                }
-                case GLFMTouchPhaseCancelled:
-                    break;
-            }
-        }
+        long timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::steady_clock::now() - start).count();
+        TouchInfo event = TouchInfo(phase, Point<float_t>(x, y), timestamp, touch);
+        detector.onMotionEvent(event);
 
         return true;
-    }
-
-    void Window::move_cursor(double x, double y) {
-        auto xpos = static_cast<int16_t>(x / Window::get().get_ratio_x());
-        auto ypos = static_cast<int16_t>(y / Window::get().get_ratio_y());
-        Point<int16_t> pos = Point<int16_t>(xpos, ypos);
-        UI::get().send_cursor(pos);
     }
 
     void focus_callback(GLFMDisplay *display, bool focused) {
@@ -301,15 +249,15 @@ namespace ms {
         }
     }
 
-    double Window::get_ratio_x() {
+    float Window::get_ratio_x() {
         return ratio_x;
     }
 
-    double Window::get_ratio_y() {
+    float Window::get_ratio_y() {
         return ratio_y;
     }
 
-    void Window::set_ratio(double ratio_x, double ratio_y) {
+    void Window::set_ratio(float ratio_x, float ratio_y) {
         this->ratio_x = ratio_x;
         this->ratio_y = ratio_y;
     }

@@ -94,8 +94,10 @@ void Textfield::set_state(State st) {
         }
 
         if (state_ == State::FOCUSED) {
-            glfmSetKeyboardVisible(Window::get().get_display(), true);
             UI::get().focus_textfield(this);
+            UI::get().set_keyboard_status(true);
+        } else if (state_ == State::NORMAL) {
+            UI::get().set_keyboard_status(false);
         }
     }
 }

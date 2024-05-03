@@ -450,6 +450,10 @@ struct PosCHARINFO : public Configuration::PointEntry {
     PosCHARINFO() : PointEntry("PosCHARINFO", "(264, 264)") {}
 };
 
+struct PosMobileInput : public Configuration::PointEntry {
+    PosMobileInput() : PointEntry("PosCHARINFO", "(0, 0)") {}
+};
+
 // The default type of UIMiniMap
 struct MiniMapType : public Configuration::ByteEntry {
     MiniMapType() : ByteEntry("MiniMapType", "0") {}

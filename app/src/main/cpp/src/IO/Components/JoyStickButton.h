@@ -19,25 +19,29 @@
 #include "TouchInfo.h"
 
 namespace ms {
-class VirtualJoyStick {
+class JoyStickButton : public Button {
 public:
-    VirtualJoyStick(Point<int16_t> position, int16_t radius);
+    JoyStickButton(Point<int16_t> position);
 
-    void draw() const;
+    void draw(Point<int16_t> parentpos) const override;
 
-    void update();
+    void update() override;
 
-    bool set_state(TouchInfo touchInfo);
+    Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
 
-    void bind_touch_id(int16_t touch_id);
+    Rectangle<int16_t> bounds(Point<int16_t> parentpos) const override;
 
-    int16_t get_bind_touch_id();
+    int16_t width() const override;
+
+    Point<int16_t> origin() const override;
+
+    bool in_combobox(Point<int16_t> cursorpos) override;
 
 private:
-    Point<int16_t> position_;
+    void calc_angle(int16_t distance_x, int16_t distance_y);
+
     ColorCircle background_;
     int16_t radius_;
-    int16_t bind_touch_id_;
     double angle_;
 };
 }  // namespace ms

@@ -55,14 +55,12 @@ namespace ms {
         state_->draw(alpha, cursor_.get_position());
         scrolling_notice_.draw(alpha);
         cursor_.draw(alpha);
-        mobile_input_.draw();
     }
 
     void UI::update() {
         state_->update();
         scrolling_notice_.update();
         cursor_.update();
-        mobile_input_.update();
     }
 
     void UI::enable() {
@@ -149,8 +147,12 @@ namespace ms {
         }
     }
 
-    void UI::send_cursor(Point<int16_t> pos) {
-        send_cursor(pos, cursor_.get_state());
+    void UI::send_cursor(float x, float y) {
+        auto xpos = static_cast<int16_t>(x / Window::get().get_ratio_x());
+        auto ypos = static_cast<int16_t>(y / Window::get().get_ratio_y());
+        Point<int16_t> converted_pos = Point<int16_t>(xpos, ypos);
+
+        send_cursor(converted_pos, cursor_.get_state());
     }
 
     void UI::rightclick() {
@@ -443,29 +445,7 @@ namespace ms {
                          bolded);
     }
 
-    bool UI::should_send_cursor() {
-        if (UI::get().get_state_type() == typeid(UIStateGame)) {
-            VirtualJoyStick joyStick = mobile_input_.getVirtualJoyStick();
-            for (const auto &touch_phase: touch_phase_) {
-                if (joyStick.set_state(touch_phase.second))
-                    return false;
-            }
-
-            for (const auto &iter: mobile_input_.getTouchButtons()) {
-                bool should_not_send = false;
-                for (const auto &touch_phase: touch_phase_) {
-                    if (TouchButton *button = iter.second.get()) {
-                        should_not_send = should_not_send || button->set_state(touch_phase.second);
-                    }
-                }
-                if (should_not_send)
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    Keyboard &UI::get_keyboard() {
+    Keyboard& UI::get_keyboard() {
         return keyboard_;
     }
 
@@ -474,23 +454,11 @@ namespace ms {
         state_->remove(type);
     }
 
-    void UI::set_touch_phase(int16_t touch, TouchInfo touchPhase) {
-        touch_phase_[touch] = touchPhase;
+    void UI::set_keyboard_status(bool status) {
+        glfmSetKeyboardVisible(Window::get().get_display(), status);
     }
 
-    void UI::remove_touch_phase(int16_t touch_id) {
-        touch_phase_.erase(touch_id);
-    }
-
-    const std::unordered_map<int16_t, TouchInfo> &UI::get_touch_phase() {
-        return touch_phase_;
-    }
-
-    std::type_info const& UI::get_state_type() {
-        if (state_) {
-            return typeid(*state_);
-        } else {
-            return typeid(void); // Indicate that state_ is pointing to nullptr
-        }
+    Cursor& UI::get_cursor() {
+        return cursor_;
     }
 }  // namespace ms

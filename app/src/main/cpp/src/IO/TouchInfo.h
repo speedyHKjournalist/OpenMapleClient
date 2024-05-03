@@ -11,11 +11,15 @@ namespace ms {
     class TouchInfo {
     public:
         TouchInfo() = default;
-
-        TouchInfo(const Point <double_t> &pos, GLFMTouchPhase p)
-                : relative_pos(pos), phase(p) {}
-
-        Point <double_t> relative_pos;
-        GLFMTouchPhase phase;
+        TouchInfo(GLFMTouchPhase phase, Point<float_t> position, long timestamp, int16_t touch_id);
+        GLFMTouchPhase get_phase();
+        int16_t get_touch_id() const;
+        Point<float_t>& get_position();
+        long get_timestamp() const;
+    private:
+        GLFMTouchPhase phase_;
+        Point<float_t> position_;
+        long timestamp_;
+        int16_t touch_id_;
     };
 }

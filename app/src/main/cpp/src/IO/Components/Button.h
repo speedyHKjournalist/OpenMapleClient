@@ -19,47 +19,54 @@
 
 namespace ms {
 // Base class for different button types.
-class Button {
-public:
-    enum State { NORMAL, DISABLED, MOUSEOVER, PRESSED, IDENTITY, NUM_STATES };
+    class Button {
+    public:
+        enum State {
+            NORMAL, DISABLED, MOUSEOVER, PRESSED, IDENTITY, NUM_STATES
+        };
 
-    virtual ~Button() = default;
+        virtual ~Button() = default;
 
-    virtual void draw(Point<int16_t> parentpos) const = 0;
+        virtual void draw(Point<int16_t> parentpos) const = 0;
 
-    virtual void update() = 0;
+        virtual void update() = 0;
 
-    virtual Rectangle<int16_t> bounds(Point<int16_t> parentpos) const = 0;
+        virtual Rectangle<int16_t> bounds(Point<int16_t> parentpos) const = 0;
 
-    virtual int16_t width() const = 0;
+        virtual int16_t width() const = 0;
 
-    virtual Point<int16_t> origin() const = 0;
+        virtual Point<int16_t> origin() const = 0;
 
-    virtual Cursor::State send_cursor(bool clicked,
-                                      Point<int16_t> cursorpos) = 0;
+        virtual Cursor::State send_cursor(bool clicked,
+                                          Point<int16_t> cursorpos) = 0;
 
-    virtual bool in_combobox(Point<int16_t> cursorpos);
+        virtual bool in_combobox(Point<int16_t> cursorpos);
 
-    virtual uint16_t get_selected() const;
+        virtual uint16_t get_selected() const;
 
-    void set_position(Point<int16_t> position);
+        void set_position(Point<int16_t> position);
 
-    void set_state(State state);
+        Point<int16_t> get_position();
 
-    void set_active(bool active);
+        void set_state(State state);
 
-    void toggle_pressed();
+        void set_active(bool active);
 
-    bool is_active() const;
+        void toggle_pressed();
 
-    State get_state() const;
+        bool is_active() const;
 
-    bool is_pressed() const;
+        State get_state() const;
 
-protected:
-    State state_;
-    Point<int16_t> position_;
-    bool active_;
-    bool pressed_;
-};
+        bool is_pressed() const;
+
+        bool is_draggable() const;
+
+    protected:
+        State state_;
+        Point<int16_t> position_;
+        bool active_;
+        bool pressed_;
+        bool draggable_;
+    };
 }  // namespace ms

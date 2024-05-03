@@ -16,35 +16,57 @@
 #pragma once
 
 #include <unordered_map>
-#include "TouchButton.h"
-#include "VirtualJoyStick.h"
+#include "JumpButton.h"
+#include "JoyStickButton.h"
+#include "ControlUIButton.h"
+#include "Audio.h"
+#include <nlnx/node.hpp>
+#include <nlnx/nx.hpp>
+
 
 namespace ms {
-    class UIMobileInput {
+    class UIMobileInput : public UIDragElement<PosMobileInput> {
     public:
-        enum MobileButtons : uint16_t {
-            ButtonJump,
-            ButtonNormal0,
-            ButtonNormal1,
-            ButtonNormal2,
-            ButtonNormal3,
-            ButtonNormal4,
-            ButtonNormal5,
-            ButtonNormal6
+        enum MenuType { UICONTROL };
+        static constexpr Type TYPE = UIElement::Type::MOBILE_INPUT;
+        static constexpr bool FOCUSED = false;
+        static constexpr bool TOGGLED = false;
+
+        enum Buttons {
+            BT_JOYSTICK,
+            BT_JUMP,
+            BT_UICONTROL,
+            BT_HIDEUI,
+            BT_DRAGUI,
+            BT_SKILL_USE
         };
 
         UIMobileInput();
 
-        void draw() const;
+        void draw(float inter) const override;
 
-        void update();
+        void update() override;
 
-        std::map<uint16_t, std::unique_ptr<TouchButton>> &getTouchButtons();
+        Cursor::State send_cursor(bool clicked, Point<int16_t> cursorpos) override;
 
-        VirtualJoyStick &getVirtualJoyStick();
+        Button::State button_pressed(uint16_t id) override;
+
+        void toggle_UIControl(bool state);
+
+        void toggle_ui();
+
+        bool is_menu_active();
+
+        void remove_menus();
+
+        UIElement::Type get_type() const override;
+
+        bool is_in_range(Point<int16_t> cursorpos) const override;
 
     private:
-        std::map<uint16_t, std::unique_ptr<TouchButton>> touch_buttons_;
-        VirtualJoyStick joystick_;
+        bool show_ui;
+        bool drag_ui;
+        Point<int16_t> prev_cursor_pos;
+        Point<int16_t> curr_cursor_pos;
     };
 }  // namespace ms

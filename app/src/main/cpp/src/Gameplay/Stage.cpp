@@ -279,6 +279,7 @@ void Stage::send_key(KeyType::Id type, int32_t action, bool down) {
 
 Cursor::State Stage::send_cursor(bool pressed, Point<int16_t> position) {
     auto statusbar = UI::get().get_element<UIStatusBar>();
+    auto mobileInput = UI::get().get_element<UIMobileInput>();
 
     if (statusbar && statusbar->get().is_menu_active()) {
         if (pressed) {
@@ -287,6 +288,16 @@ Cursor::State Stage::send_cursor(bool pressed, Point<int16_t> position) {
 
         if (statusbar->get().is_in_range(position)) {
             return statusbar->get().send_cursor(pressed, position);
+        }
+    }
+
+    if(mobileInput && mobileInput->get().is_menu_active()) {
+        if (pressed) {
+            mobileInput->get().remove_menus();
+        }
+
+        if (mobileInput->get().is_in_range(position)) {
+            return mobileInput->get().send_cursor(pressed, position);
         }
     }
 

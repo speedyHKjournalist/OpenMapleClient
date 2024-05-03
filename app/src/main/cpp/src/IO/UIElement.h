@@ -71,6 +71,7 @@ public:
         GAUGE_BOSS,
         NOTIFICATION,
         TRADE,
+        MOBILE_INPUT,
         NUM_TYPES
     };
 

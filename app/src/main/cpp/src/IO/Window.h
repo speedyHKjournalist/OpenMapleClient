@@ -18,12 +18,12 @@
 #include "../Error.h"
 #include "../Template/Singleton.h"
 #include "glfm.h"
+#include "TapDetector.h"
 #include <functional>
 #include <string>
 #include <unistd.h>
 #include <iostream>
 #include <unistd.h>
-#define GetCurrentDir getcwd
 
 namespace ms {
     class Window : public Singleton<Window> {
@@ -54,13 +54,11 @@ namespace ms {
 
         void toggle_fullscreen();
 
-        void move_cursor(double x, double y);
+        void set_ratio(float ratio_x, float ratio_y);
 
-        void set_ratio(double ratio_x, double ratio_y);
+        float get_ratio_x();
 
-        double get_ratio_x();
-
-        double get_ratio_y();
+        float get_ratio_y();
 
         GLFMDisplay* get_display();
 
@@ -71,8 +69,8 @@ namespace ms {
         bool fullscreen_;
         float opacity_;
         float opc_step_;
-        double ratio_x;
-        double ratio_y;
+        float ratio_x;
+        float ratio_y;
         std::function<void()> fade_procedure_;
         int16_t width_;
         int16_t height_;
